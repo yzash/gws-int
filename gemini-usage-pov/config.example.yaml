@@ -29,7 +29,37 @@ ou_filter: []
 #     feature: [feature_source, action]
 param_map: {}
 
-# Read-only scopes. The tool refuses to run if anything else is listed here.
+# ---------------------------------------------------------------- data sources
+# Which optional sources to collect. Change with `python setup.py --modules`.
+modules:
+  activity_logs: true    # Drive, Meet, Chat, Calendar, Classroom, Keep, sign-ins, OAuth apps, Chrome (same permission as Gemini)
+  usage_reports: false   # Google usage reports: active users per app, emails, Drive volumes, last sign-in (+1 read-only scope)
+  licensing: false       # licence assignments (+ apps.licensing scope, which Google only offers as read+write)
+  chrome: false          # installed Chrome extensions + ChromeOS telemetry (+2 read-only scopes)
+
+# Audit logs fetched when activity_logs is on. Remove any you don't need.
+activity_applications: [drive, meet, chat, calendar, login, token, classroom, keep, workspace_studio, chrome]
+activity_window_days: null   # defaults to window_days; lower it if the Drive log is very large
+gmail_sent_log: false        # per-message sent-mail log (large). Usage reports already give email counts.
+
+# Licence products to list (Google product IDs). Missing products are skipped.
+licence_products: [Google-Apps, "101047", "101031", "101034", "101037", "101038", "101039"]
+ai_licence_keywords: [gemini, ai pro, ai ultra, ai expanded, ai meetings, ai security]
+# App / extension names that count as "AI tools" (matched case-insensitively).
+ai_app_keywords: [chatgpt, openai, claude, anthropic, copilot, perplexity, gemini, notebooklm, grammarly, otter, fireflies, deepseek, mistral, quillbot, magicschool, brisk, diffit, curipod]
+
+# ---------------------------------------------------------------- analysis settings
+work_hours: {start: 8, end: 18, days: [0, 1, 2, 3, 4]}   # 0 = Monday; used for after-hours metrics
+office_ip_ranges: []          # e.g. ["203.0.113.0/24"] to measure office/school network vs home
+periods: []                   # e.g. [{name: Term 3, start: 2026-07-01, end: 2026-09-10}, {name: Holiday, start: 2026-09-11, end: 2026-09-20}]
+group_by: [ou_path, ou_level_1]   # also ou_level_2, or custom:<Schema>.<field> (listed in custom_fields)
+custom_fields: []             # directory custom fields, e.g. ["Education.subject", "Education.grade"]
+min_group_size: 10            # groups smaller than this are hidden in group tables
+target_adoption_pct: 50       # groups below this Gemini reach are flagged
+use_case_map: {}              # assign unclassified Gemini action/feature values, e.g. {generate_starter_freeform: Data and admin work}
+pseudonymise: false           # same as `python run.py --pseudonymise`
+
+# Scopes. Written by setup.py from `modules`; the tool refuses any scope not on its fixed list.
 scopes:
   - https://www.googleapis.com/auth/admin.reports.audit.readonly
   - https://www.googleapis.com/auth/admin.directory.user.readonly

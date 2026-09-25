@@ -19,7 +19,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from src import fetch, report, transform
+from src import fetch, pipeline, report, transform
+from src.common import Pseudonymiser
 from src.config import MAX_RECOMMENDED_WINDOW_DAYS, ConfigError, load_config
 
 BASE = Path(__file__).resolve().parent
@@ -85,6 +86,8 @@ def main(argv=None) -> int:
                     help="skip the API and re-use a cached output/raw_*.json (default: newest)")
     ap.add_argument("--compare", metavar="ORG_SUMMARY_CSV", help="previous org_summary CSV to compare against")
     ap.add_argument("--no-browser", action="store_true", help="do not open a browser (sign-in URL is printed)")
+    ap.add_argument("--pseudonymise", action="store_true",
+                    help="replace emails, names, titles and IPs in every output (for sharing)")
     ap.add_argument("--verbose", action="store_true")
     args = ap.parse_args(argv)
 
@@ -109,6 +112,7 @@ def main(argv=None) -> int:
     out_dir = BASE / "output"
     run_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
+    extra = None
     if args.from_cache:
         cache_path = latest_cache() if args.from_cache == "latest" else Path(args.from_cache)
         if not cache_path or not cache_path.exists():
@@ -117,6 +121,7 @@ def main(argv=None) -> int:
         print(f"Using cached API response {cache_path}")
         cache = fetch.load_cache(cache_path)
         activities, users = cache["activities"], cache["users"]
+        extra = cache.get("extra")
         start, end = cache["start_time"], cache["end_time"]
         cfg["window_days"] = round((pd.Timestamp(end) - pd.Timestamp(start)).total_seconds() / 86400)
     else:
@@ -126,7 +131,7 @@ def main(argv=None) -> int:
         print(f"Fetching Gemini events {start} -> {end} ...")
         activities = fetch.fetch_activities(reports, start, end, cfg["customer_id"])
         print("Fetching user directory ...")
-        users = fetch.fetch_users(directory, cfg["customer_id"])
+        users = fetch.fetch_users(directory, cfg["customer_id"], custom_fields=cfg["custom_fields"])
         if args.dry_run:
             n_events = sum(len(a.get("events") or []) for a in activities)
             print(f"\nDry run: {len(activities)} activity records ({n_events} events), "
@@ -134,9 +139,10 @@ def main(argv=None) -> int:
             if not activities:
                 print(ZERO_RECORDS_HELP)
             return 0
+        extra = fetch.fetch_extra(cfg, creds, reports, start, end, users)
         cache_path = out_dir / f"raw_{run_date}.json"
-        fetch.save_cache(cache_path, activities, users, start, end)
-        print(f"Cached API response to {cache_path}")
+        fetch.save_cache(cache_path, activities, users, start, end, extra)
+        print(f"Cached API responses to {cache_path} (+ raw_extra_{run_date}.json.gz)")
 
     if not activities:
         print(ZERO_RECORDS_HELP)
@@ -144,30 +150,32 @@ def main(argv=None) -> int:
     rep = transform.parameter_report(activities, cfg["param_map"])
     transform.log_parameter_report(rep, cfg["usage_event_names"])
 
-    events = transform.flatten(activities, cfg["param_map"])
-    summary = transform.build_user_summary(
-        events, users,
-        usage_event_names=cfg["usage_event_names"],
-        include_suspended=cfg["include_suspended"],
-        ou_filter=cfg["ou_filter"],
-        tz=cfg["timezone"],
-    )
-    scoped = transform.scoped_events(events, summary, cfg["usage_event_names"])
-    org = transform.build_org_summary(summary, scoped, start_time=start, end_time=end,
-                                      window_days=cfg["window_days"])
+    result = pipeline.build(cfg, activities, users, start, end, extra)
+    events, summary, scoped, org = result["events"], result["summary"], result["scoped"], result["org"]
+    sections = pipeline.ordered(result["sections"])
 
     comparison = None
     if args.compare:
         comparison = transform.compare_org_summaries(pd.read_csv(args.compare), org)
 
+    pseudo = Pseudonymiser() if (args.pseudonymise or cfg.get("pseudonymise")) else None
+    if pseudo:
+        events, summary = pseudo.df(events), pseudo.df(summary)
+        scoped = pseudo.df(scoped)
     paths = report.write_csvs(out_dir, run_date, events, summary, org)
-    ctx = report.dashboard_context(summary, scoped, org, comparison)
+    details = report.write_detail_csvs(out_dir, run_date, sections, pseudo)
+    ctx = report.dashboard_context(summary, scoped, org, comparison, sections=sections,
+                                   pseudo=pseudo, run_date=run_date)
     dash = report.render_dashboard(out_dir, run_date, ctx)
 
     m = dict(zip(org["metric"], org["value"]))
     print(f"\nUsers in scope: {m['total_users']}  Active: {m['active_users']}  "
           f"Adoption: {m['adoption_pct']}%  Actions: {m['total_actions']}")
-    for p in list(paths.values()) + [dash]:
+    cov = result["sections"]["coverage"].tables[0]["df"]
+    print("\nWhat this tenant's data can show:")
+    for label, n in cov["status"].value_counts().items():
+        print(f"  {label}: {n} metrics")
+    for p in list(paths.values()) + [details, dash]:
         print(f"  wrote {p}")
     if not args.no_browser:
         webbrowser.open(dash.resolve().as_uri())

@@ -41,7 +41,7 @@
   .card { padding: 16px; margin-bottom: 12px; min-width: 0; }
   .card h2 { font-size: 15px; margin: 0 0 12px; }
   .card .note { color: var(--muted); font-size: 12px; margin: -6px 0 12px; }
-  .bar-row { display: grid; grid-template-columns: 96px 1fr 56px; align-items: center; gap: 10px; padding: 4px 0; }
+  .bar-row { display: grid; grid-template-columns: minmax(96px, 38%) minmax(40px, 1fr) 56px; align-items: center; gap: 10px; padding: 4px 0; }
   .bar-row .name { color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .bar-row .track { height: 14px; background: var(--track); border-radius: 0 4px 4px 0; }
   .bar-row .fill { height: 100%; background: var(--bar); border-radius: 0 4px 4px 0; min-width: 2px; }
@@ -62,14 +62,48 @@
   footer { color: var(--muted); font-size: 12px; margin-top: 24px; }
   .pos { color: #1a7f37; } .neg { color: #c62828; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pos { color: #57c26f; } :root:not([data-theme="light"]) .neg { color: #ef6b6b; } }
+  nav.toc { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 10px 0; margin: 8px 0 4px;
+            display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; border-bottom: 1px solid var(--border); }
+  nav.toc a { white-space: nowrap; font-size: 12px; color: var(--text-2); text-decoration: none; border: 1px solid var(--border);
+              border-radius: 999px; padding: 3px 10px; background: var(--surface); }
+  nav.toc a.off { color: var(--muted); border-style: dashed; }
+  h2.sec { font-size: 18px; margin: 28px 0 4px; scroll-margin-top: 56px; }
+  p.intro { color: var(--text-2); margin: 0 0 12px; max-width: 80ch; }
+  .status { border: 1px dashed var(--border); border-radius: 10px; padding: 12px 16px; color: var(--text-2); background: var(--surface); margin-bottom: 12px; }
+  .status b { color: var(--text); }
+  .tiles.small .tile .value { font-size: 20px; }
+  .notes { color: var(--muted); font-size: 12px; margin: 0 0 12px; padding-left: 18px; }
+  .more { color: var(--muted); font-size: 12px; margin-top: 6px; }
+  .more a { color: var(--text-2); }
+  .hm { border-collapse: separate; border-spacing: 2px; font-size: 10px; }
+  .hm td, .hm th { border: 0; padding: 0; text-align: center; color: var(--muted); font-weight: 400; }
+  .hm td.c { width: 22px; height: 18px; border-radius: 3px; background: var(--track); }
+  .hm td.c span { display: block; width: 100%; height: 100%; border-radius: 3px; background: var(--bar); }
+  .hm th.r { text-align: right; padding-right: 6px; }
+  .spark { display: grid; grid-template-columns: minmax(0, 1fr) minmax(80px, 180px) 56px; gap: 10px; align-items: center; padding: 4px 0; }
+  .spark .name { color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .spark svg { width: 100%; height: 34px; }
+  .spark polyline { fill: none; stroke: var(--bar); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .spark .num { text-align: right; font-variant-numeric: tabular-nums; }
+  td { max-width: 46ch; overflow-wrap: break-word; }
 </style>
 </head>
 <body>
 <main>
   <header>
     <h1>Gemini usage in Google Workspace{% if tenant_label %} · {{ tenant_label }}{% endif %}</h1>
-    <p>{{ window }} ({{ window_days }} days) · generated {{ generated_at }}</p>
+    <p>{{ window }} ({{ window_days }} days) · generated {{ generated_at }}{% if pseudonymised %} · <b>pseudonymised</b>{% endif %}</p>
   </header>
+
+  {% if sections %}
+  <nav class="toc">
+    {% for s in sections if s.key == 'coverage' %}<a href="#{{ s.key }}">{{ s.title }}</a>{% endfor %}
+    <a href="#gemini">Gemini overview</a>
+    {% for s in sections if s.key != 'coverage' %}<a href="#{{ s.key }}"{% if s.status != 'ok' %} class="off"{% endif %}>{{ s.title }}</a>{% endfor %}
+  </nav>
+  {% for s in sections if s.key == 'coverage' %}{% include 'section.html.j2' %}{% endfor %}
+  <h2 class="sec" id="gemini">Gemini overview</h2>
+  {% endif %}
 
   <section class="tiles">
     {% for t in tiles %}
@@ -162,6 +196,8 @@
     </div>
     {% else %}<p class="dim">Every user in scope used Gemini at least once.</p>{% endfor %}
   </section>
+
+  {% for s in sections if s.key != 'coverage' %}{% include 'section.html.j2' %}{% endfor %}
 
   <footer>
     Source: Admin SDK Reports API (gemini_in_workspace_apps) joined with the Directory API.

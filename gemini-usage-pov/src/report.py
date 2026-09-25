@@ -14,7 +14,8 @@ TEMPLATE_DIR = Path(__file__).resolve().parent.parent / "templates"
 
 APP_LABELS = {
     "gmail": "Gmail", "docs": "Docs", "sheets": "Sheets", "slides": "Slides",
-    "drive": "Drive", "chat": "Chat", "meet": "Meet", "calendar": "Calendar", "workflows": "Workflows", "gemini_app": "Gemini app",
+    "drive": "Drive", "chat": "Chat", "meet": "Meet", "calendar": "Calendar", "keep": "Keep", "vids": "Vids", "forms": "Forms",
+    "classroom": "Classroom", "workflows": "Workflows", "gemini_app": "Gemini app",
     "other": "Other",
 }
 
@@ -50,13 +51,14 @@ def _bars(items: list[tuple[str, int]]) -> list[dict]:
 
 
 def dashboard_context(user_summary: pd.DataFrame, events: pd.DataFrame, org: pd.DataFrame,
-                      comparison: pd.DataFrame | None = None, tenant_label: str = "") -> dict:
+                      comparison: pd.DataFrame | None = None, tenant_label: str = "",
+                      sections: list | None = None, pseudo=None, run_date: str = "") -> dict:
     m = dict(zip(org["metric"], org["value"]))
     start = str(m["window_start"])[:10]
     end = str(m["window_end"])[:10]
 
     by_app = [(APP_LABELS[a], int(user_summary[a].sum())) for a in APP_COLUMNS]
-    by_app = [x for x in by_app if not (x[0] == "Other" and x[1] == 0)]
+    by_app = [x for x in by_app if x[1] > 0]
     by_app.sort(key=lambda x: -x[1])
     by_tier = [(t, int((user_summary["tier"] == t).sum())) for t in TIERS]
 
@@ -97,7 +99,89 @@ def dashboard_context(user_summary: pd.DataFrame, events: pd.DataFrame, org: pd.
         "zero_count": len(zero),
         "ou_rows": ou_rows,
         "comparison": comparison.to_dict("records") if comparison is not None and len(comparison) else [],
+        "sections": [serialize_section(s, pseudo, run_date) for s in (sections or [])],
+        "pseudonymised": pseudo is not None,
     }
+
+
+def _cell(v) -> str:
+    if v is None or (isinstance(v, float) and pd.isna(v)) or v is pd.NaT:
+        return ""
+    if isinstance(v, pd.Timestamp):
+        return v.strftime("%Y-%m-%d %H:%M") if (v.hour or v.minute) else v.strftime("%Y-%m-%d")
+    if isinstance(v, bool):
+        return "yes" if v else "no"
+    if isinstance(v, float):
+        return f"{v:,.1f}" if abs(v) < 1e6 else f"{v:,.0f}"
+    if isinstance(v, int):
+        return f"{v:,}"
+    try:
+        if pd.isna(v):
+            return ""
+    except (TypeError, ValueError):
+        pass
+    return str(v)
+
+
+def _spark(values: list, w: int = 180, h: int = 34) -> str:
+    vals = [float(v or 0) for v in values]
+    if len(vals) < 2:
+        vals = vals * 2 or [0, 0]
+    lo, hi = min(vals), max(vals)
+    rng = (hi - lo) or 1
+    step = w / (len(vals) - 1)
+    return " ".join(f"{i * step:.1f},{h - 2 - (v - lo) / rng * (h - 4):.1f}" for i, v in enumerate(vals))
+
+
+def serialize_section(sec, pseudo=None, run_date: str = "") -> dict:
+    tables = []
+    for t in sec.tables:
+        df = t["df"]
+        if pseudo is not None:
+            df = pseudo.df(df)
+        limit = t["limit"]  # 0 = CSV only, None/negative = show all, N = first N rows
+        if limit is None or limit < 0:
+            shown = df
+        else:
+            shown = df.head(limit)
+        tables.append({
+            "title": t["title"], "note": t.get("note", ""),
+            "columns": [str(c) for c in df.columns],
+            "rows": [[_cell(v) for v in row] for row in shown.itertuples(index=False)],
+            "total": len(df), "shown": len(shown),
+            "csv": f"details_{run_date}/{t['csv']}.csv" if t.get("csv") else "",
+        })
+    heatmaps = []
+    for hm in sec.heatmaps:
+        grid = hm["grid"]
+        peak = max(int(grid.values.max()), 1)
+        heatmaps.append({"title": hm["title"], "cols": list(grid.columns),
+                         "rows": [{"label": idx, "cells": [{"v": int(v), "a": round(0.08 + 0.92 * v / peak, 2) if v else 0}
+                                                           for v in row]} for idx, row in zip(grid.index, grid.values)]})
+    sparks = [{"title": sp["title"], "series": [{"label": lbl, "points": _spark(vals), "latest": _cell(latest),
+                                                  "max": _cell(max(vals) if vals else 0)} for lbl, vals, latest in sp["series"]]}
+              for sp in sec.sparks]
+    charts = [{"title": c["title"], "unit": c["unit"],
+               "bars": _bars([(k, round(v, 1)) for k, v in c["bars"]])} for c in sec.charts]
+    return {"key": sec.key, "title": sec.title, "status": sec.status, "reason": sec.reason, "intro": sec.intro,
+            "tiles": [{"label": a, "value": b, "sub": c} for a, b, c in sec.tiles],
+            "charts": charts, "heatmaps": heatmaps, "sparks": sparks, "tables": tables, "notes": sec.notes}
+
+
+def write_detail_csvs(out_dir: Path, run_date: str, sections: list, pseudo=None) -> Path:
+    d = out_dir / f"details_{run_date}"
+    d.mkdir(parents=True, exist_ok=True)
+    for sec in sections:
+        for t in sec.tables:
+            if not t.get("csv"):
+                continue
+            df = t["df"] if pseudo is None else pseudo.df(t["df"])
+            df = df.copy()
+            for c in df.columns:
+                if pd.api.types.is_datetime64_any_dtype(df[c]):
+                    df[c] = _fmt_ts(df[c])
+            df.to_csv(d / f"{t['csv']}.csv", index=False)
+    return d
 
 
 def render_dashboard(out_dir: Path, run_date: str, context: dict) -> Path:

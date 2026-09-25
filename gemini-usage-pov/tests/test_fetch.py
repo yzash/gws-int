@@ -80,3 +80,75 @@ def test_gives_up_eventually():
 def test_window_is_rfc3339():
     start, end = fetch.window(28)
     assert start.endswith("Z") and end.endswith("Z") and start < end
+
+
+# ------------------------------------------------------------ optional sources
+def http_error_msg(status, message):
+    import json
+    return HttpError(httplib2.Response({"status": status}), json.dumps({"error": {"message": message}}).encode())
+
+
+class MultiAppReports:
+    """activities().list per application, plus usage report endpoints."""
+
+    def __init__(self):
+        self.calls = []
+
+    def activities(self):
+        outer = self
+
+        class A:
+            def list(self, **kw):
+                outer.calls.append(kw)
+                app = kw["applicationName"]
+                if app == "classroom":
+                    return FakeRequest(errors=[http_error_msg(403, "Classroom is not enabled")])
+                return FakeRequest({"items": [{"id": {"time": "2026-09-20T10:00:00.000Z"},
+                                               "actor": {"email": "a@example.com"},
+                                               "events": [{"name": kw.get("eventName") or "x"}]}]})
+        return A()
+
+    def customerUsageReports(self):
+        class C:
+            def get(self, date):
+                if date >= "2026-09-22":
+                    return FakeRequest(errors=[http_error_msg(400, "Data for dates later than 2026-09-21 is not yet available.")])
+                return FakeRequest({"usageReports": [{"date": date, "parameters": [{"name": "gmail:num_1day_active_users", "intValue": "3"}]}]})
+        return C()
+
+    def userUsageReport(self):
+        class U:
+            def get(self, **kw):
+                if kw["date"] >= "2026-09-22":
+                    return FakeRequest(errors=[http_error_msg(400, "Data for dates later than 2026-09-21 is not yet available.")])
+                return FakeRequest({"usageReports": [{"date": kw["date"], "entity": {"userEmail": "A@example.com"},
+                                                      "parameters": [{"name": "gmail:num_emails_sent", "intValue": "2"}]}]})
+        return U()
+
+
+def test_fetch_extra_records_status(monkeypatch):
+    monkeypatch.setattr(fetch, "build_optional_services", lambda creds, modules: {})
+    cfg = {"modules": {"activity_logs": True, "usage_reports": True}, "activity_applications": ["drive", "classroom", "token"],
+           "gmail_sent_log": True, "activity_window_days": 28, "window_days": 5, "customer_id": "my_customer"}
+    rep = MultiAppReports()
+    extra = fetch.fetch_extra(cfg, None, rep, "2026-08-27T12:00:00.000Z", "2026-09-24T12:00:00.000Z", [], progress=None)
+    st = extra["status"]
+    assert st["drive"].startswith("ok") and st["classroom"].startswith("unavailable") and "403" in st["classroom"]
+    # token only fetches grants/revokes, never the huge 'activity' stream
+    token_calls = [c for c in rep.calls if c["applicationName"] == "token"]
+    assert sorted(c["eventName"] for c in token_calls) == ["authorize", "revoke"]
+    # gmail is chunked to <=30-day spans and filtered to sent mail
+    gmail_calls = [c for c in rep.calls if c["applicationName"] == "gmail"]
+    assert len(gmail_calls) == 1 and gmail_calls[0]["filters"] == "event_info.mail_event_type==1"
+    # usage: dates after the available one are skipped, not errors
+    assert st["usage_reports"].startswith("ok")
+    assert [r["date"] for r in extra["usage_customer"]] == ["2026-09-21", "2026-09-20", "2026-09-19"]
+    assert extra["usage_users"][0]["email"] == "A@example.com"
+
+
+def test_cache_roundtrip(tmp_path):
+    p = tmp_path / "raw_2026-09-25.json"
+    fetch.save_cache(p, [{"a": 1}], [{"u": 1}], "s", "e", {"status": {"drive": "ok: 0 records"}})
+    assert (tmp_path / "raw_extra_2026-09-25.json.gz").exists()
+    c = fetch.load_cache(p)
+    assert c["extra"]["status"]["drive"] == "ok: 0 records" and c["activities"] == [{"a": 1}]

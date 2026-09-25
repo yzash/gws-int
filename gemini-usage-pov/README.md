@@ -7,7 +7,14 @@ The tool reads your tenant's Gemini audit log (Admin SDK Reports API,
 `gemini_in_workspace_apps`), joins it with your user directory so people with
 zero usage appear too, and produces three CSV files plus a one-page dashboard.
 
-- **Read-only.** It asks for two read-only permissions and refuses to run with anything else.
+Optionally it also reads the other Workspace audit logs (Drive, Meet, Chat, Calendar,
+Classroom, sign-ins, third-party app grants, Chrome), Google's usage reports, licence
+assignments and Chrome management data. The dashboard then opens with a **coverage map**:
+every adoption metric in the catalog, marked as extracted, supported but empty, blocked
+by Google (with the reason), or not exposed by Google's APIs at all.
+
+- **Read-only.** By default two read-only permissions; each optional source adds its own
+  (see [Data sources](#data-sources)). The tool refuses to run with any scope not on its fixed list.
 - **Runs on your own computer.** Credentials, tokens and results never leave it.
   The only network calls go to Google (`googleapis.com` / `accounts.google.com`).
 - **No prompt or response content.** The audit log does not contain it, and the tool does not try to infer it.
@@ -98,7 +105,8 @@ files below into `output/`, and opens the dashboard in your browser.
 | `user_summary_YYYY-MM-DD.csv` | user | user_email, name, ou_path, suspended, total_actions, gmail, docs, sheets, slides, drive, chat, meet, calendar, workflows, gemini_app, other, distinct_features, active_days, first_used, last_used, tier |
 | `org_summary_YYYY-MM-DD.csv` | metric | metric, value |
 | `dashboard.html` (and `dashboard_YYYY-MM-DD.html`) | — | headline tiles, actions by app, users by tier, top 20 users, top 10 features, adoption by OU, zero-usage users by OU |
-| `raw_YYYY-MM-DD.json` | — | the untouched API response, so the report can be rebuilt without calling Google again |
+| `details_YYYY-MM-DD/*.csv` | varies | every table behind the dashboard sections (per-user Drive, Meet, Chat, Classroom, licences, coverage, …) |
+| `raw_YYYY-MM-DD.json` (+ `raw_extra_YYYY-MM-DD.json.gz`) | — | the untouched API responses, so the report can be rebuilt without calling Google again |
 
 The CSVs open directly in Google Sheets (File > Import > Upload) or Excel. The
 dashboard is a single self-contained file: it can be opened anywhere or emailed as-is.
@@ -115,7 +123,34 @@ python run.py --days 90                 # a different window just for this run
 python run.py --from-cache              # rebuild the report from the newest output/raw_*.json, offline
 python run.py --compare output/org_summary_2026-08-28.csv   # show change vs an earlier run
 python run.py --no-browser              # don't open a browser (sign-in URL is printed instead)
+python run.py --pseudonymise            # replace emails, names, titles and IPs in all outputs, for sharing
+python setup.py --modules               # change which optional data sources are collected
 ```
+
+## Data sources
+
+Change these with `python setup.py --modules` (it tells you which APIs to enable). If the
+permissions change, the next `python run.py` asks you to sign in again and approve them.
+
+| Module | What it adds | Extra permission | API to enable |
+| --- | --- | --- | --- |
+| *(always)* Gemini + directory | Gemini adoption, tiers, use cases, time patterns, groups, 2SV status | `admin.reports.audit.readonly`, `admin.directory.user.readonly` | Admin SDK API |
+| `activity_logs` (on by default) | Drive, Meet, Chat, Calendar, Classroom, Keep, Workspace Studio, sign-in, OAuth-grant and Chrome audit logs | none | — |
+| `usage_reports` | daily / 7-day / 30-day active users per app, emails sent/received, Drive volumes, last sign-in and interaction per user, dormant accounts | `admin.reports.usage.readonly` | — |
+| `licensing` | licences per SKU, idle paid AI seats, heavy AI users without an AI licence | `apps.licensing` (Google offers **no read-only** licensing scope; the tool only lists) | Enterprise License Manager API |
+| `chrome` | installed browser extensions (AI tools flagged), ChromeOS app running time, device active/idle/locked | `chrome.management.reports.readonly`, `chrome.management.telemetry.readonly` | Chrome Management API |
+
+A source the tenant can't provide (wrong edition, API not enabled, feature not used) doesn't
+stop the run: its dashboard section and coverage rows show exactly why.
+
+**What Google's APIs do not expose at all** (shown as ❌ on the coverage map): visits to
+external AI sites such as ChatGPT or Claude (needs Chrome Enterprise reporting to BigQuery or a
+SIEM), NotebookLM outputs, Meet reactions, Classroom guardian summaries, users hitting Gemini
+usage limits, and Docs comment resolution / suggestions.
+
+**Data volume:** the Drive log records every file view, so on large tenants it can be big. Lower
+`activity_window_days` or remove `drive` from `activity_applications` if a run is too slow.
+Usage reports run 2–5 days behind, so the newest days in the window are skipped automatically.
 
 ### Settings (`config.yaml`)
 
@@ -190,10 +225,13 @@ Client ID, or lists different scopes. It can take several minutes to apply after
   only by you.
 - To revoke access at any time: delete `token.json`, and remove the OAuth client (or the service-account key and
   its domain-wide delegation entry) in the Cloud and Admin consoles.
-- IP addresses appear only in `raw_events.csv`, never in the summaries or dashboard.
-- The dashboard and CSVs show **per-user usage with email addresses**. Per-user usage data may be subject to local
-  employee-monitoring and data-protection rules (for example Singapore's PDPA, GDPR in Europe). **Confirm with HR
-  or legal before sharing the results beyond IT.**
+- IP addresses appear only in `raw_events.csv` and the raw caches, never in the summaries or dashboard.
+  (With `office_ip_ranges` set, only the share of activity from those ranges is reported.)
+- The dashboard and CSVs show **per-user usage with email addresses**. With the optional modules this includes
+  sign-in history, meeting attendance, file activity, third-party app grants and device usage. Per-user data
+  like this may be subject to employee-monitoring and data-protection rules (for example Singapore's PDPA, GDPR
+  in Europe). **Collect it only where authorised, and confirm with HR or legal before sharing results beyond IT.**
+  `python run.py --pseudonymise` replaces emails, names, file and course titles and IPs in every output.
 - For customer deployments: the customer's own admin creates the Cloud project and credentials and runs the tool.
   DevX never needs your credentials or raw data; share the CSVs or dashboard only if you choose to.
 
@@ -204,11 +242,16 @@ setup.py            interactive wizard -> config.yaml
 run.py              auth -> fetch -> transform -> write -> dashboard
 src/config.py       config loading, scope guard
 src/auth.py         OAuth desktop flow or service-account impersonation
-src/fetch.py        Reports + Directory API calls, pagination, retry/backoff on 429/5xx, raw cache
-src/transform.py    flatten, directory join, per-user and org summaries (pure, no network)
+src/fetch.py        Reports (audit + usage), Directory, Licensing, Chrome calls; retry/backoff; raw cache
+src/transform.py    Gemini flatten, directory join, per-user and org summaries (pure, no network)
+src/pipeline.py     builds every dashboard section from a cache
+src/sections_*.py   Gemini deep-dive, Workspace audit-log sections, usage/licences/Chrome sections
+src/coverage.py     the catalog of metrics and the coverage map
+src/common.py       shared helpers, pseudonymiser
 src/report.py       CSV writers, dashboard rendering
-templates/          dashboard.html.j2
-tests/              pytest suite; runs offline on tests/fixtures/sample_cache.json
+templates/          dashboard.html.j2, section.html.j2
+tests/              pytest suite; runs offline on tests/fixtures/sample_cache.json and
+                    tests/synthetic_extra.py (synthetic API-shaped records, used only by tests)
 tools/              make_sample_fixture.py, anonymise_cache.py
 ```
 

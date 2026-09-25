@@ -1,0 +1,65 @@
+<h2 class="sec" id="{{ s.key }}">{{ s.title }}</h2>
+{% if s.intro %}<p class="intro">{{ s.intro }}</p>{% endif %}
+{% if s.status != 'ok' %}
+<div class="status"><b>{{ {'empty': 'No data', 'unavailable': 'Not available in this tenant', 'disabled': 'Not enabled'}[s.status] }}</b> — {{ s.reason }}</div>
+{% endif %}
+{% if s.tiles %}
+<section class="tiles small">
+  {% for t in s.tiles %}<div class="tile"><div class="label">{{ t.label }}</div><div class="value">{{ t.value }}</div>{% if t.sub %}<div class="sub">{{ t.sub }}</div>{% endif %}</div>{% endfor %}
+</section>
+{% endif %}
+{% if s.charts %}
+<section class="grid2">
+  {% for c in s.charts %}
+  <div class="card">
+    <h2>{{ c.title }}</h2>
+    {% for b in c.bars %}
+    <div class="bar-row" title="{{ b.label }}: {{ b.value }} {{ c.unit }}">
+      <span class="name">{{ b.label }}</span>
+      <div class="track"><div class="fill" style="width: {{ b.pct }}%"></div></div>
+      <span class="num">{{ '{:,g}'.format(b.value) }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+{% for sp in s.sparks %}
+<div class="card">
+  <h2>{{ sp.title }}</h2>
+  {% for se in sp.series %}
+  <div class="spark" title="{{ se.label }}: latest {{ se.latest }}, peak {{ se.max }}">
+    <span class="name">{{ se.label }}</span>
+    <svg viewBox="0 0 180 34" preserveAspectRatio="none" role="img" aria-label="{{ se.label }} trend"><polyline points="{{ se.points }}"/></svg>
+    <span class="num">{{ se.latest }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endfor %}
+{% for hm in s.heatmaps %}
+<div class="card">
+  <h2>{{ hm.title }}</h2>
+  <div class="scroll"><table class="hm">
+    <tr><th></th>{% for c in hm.cols %}<th>{{ c if c % 3 == 0 else '' }}</th>{% endfor %}</tr>
+    {% for r in hm.rows %}
+    <tr><th class="r">{{ r.label }}</th>{% for c in r.cells %}<td class="c" title="{{ r.label }} {{ loop.index0 }}:00 — {{ c.v }}">{% if c.v %}<span style="opacity: {{ c.a }}"></span>{% endif %}</td>{% endfor %}</tr>
+    {% endfor %}
+  </table></div>
+</div>
+{% endfor %}
+{% for t in s.tables if t.shown or t.total == 0 %}
+<div class="card">
+  <h2>{{ t.title }}</h2>
+  {% if t.note %}<p class="note">{{ t.note }}</p>{% endif %}
+  {% if t.total == 0 %}<p class="dim">Nothing recorded.</p>{% else %}
+  <div class="scroll"><table>
+    <tr>{% for c in t.columns %}<th>{{ c }}</th>{% endfor %}</tr>
+    {% for row in t.rows %}<tr>{% for v in row %}<td>{{ v }}</td>{% endfor %}</tr>{% endfor %}
+  </table></div>
+  {% endif %}
+  {% if t.csv and t.total > t.shown %}<p class="more">Showing {{ t.shown }} of {{ t.total }} rows · full table: <a href="{{ t.csv }}">{{ t.csv }}</a></p>{% endif %}
+</div>
+{% endfor %}
+{% set csv_only = s.tables|selectattr('shown', 'equalto', 0)|selectattr('total', 'gt', 0)|list %}
+{% if csv_only %}<p class="more">More detail in CSV: {% for t in csv_only %}<a href="{{ t.csv }}">{{ t.title }}</a> ({{ t.total }} rows){% if not loop.last %} · {% endif %}{% endfor %}</p>{% endif %}
+{% if s.notes %}<ul class="notes">{% for n in s.notes %}<li>{{ n }}</li>{% endfor %}</ul>{% endif %}

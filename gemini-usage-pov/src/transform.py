@@ -12,7 +12,8 @@ import pandas as pd
 
 log = logging.getLogger("gemini_usage")
 
-APPS = ["gmail", "docs", "sheets", "slides", "drive", "chat", "meet", "calendar", "workflows", "gemini_app"]
+APPS = ["gmail", "docs", "sheets", "slides", "drive", "chat", "meet", "calendar", "keep", "vids",
+        "forms", "classroom", "workflows", "gemini_app"]
 APP_COLUMNS = APPS + ["other"]
 
 # Candidate parameter names for each output field, tried in order. Parameter
@@ -36,6 +37,7 @@ APP_ALIASES = {
     "chat": "chat", "dynamite": "chat", "hangouts_chat": "chat",
     "meet": "meet", "meetings": "meet",
     "calendar": "calendar", "cal": "calendar",
+    "keep": "keep", "vids": "vids", "forms": "forms", "classroom": "classroom",
     "workflows": "workflows", "workflow": "workflows", "flows": "workflows",
     "gemini_app": "gemini_app", "gemini": "gemini_app", "gemini_web": "gemini_app",
     "gemini_web_app": "gemini_app", "bard": "gemini_app", "gemini_app_web": "gemini_app",

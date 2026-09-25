@@ -16,7 +16,8 @@ import shutil
 import sys
 from pathlib import Path
 
-from src.config import ALLOWED_SCOPES, DEFAULTS, MAX_RECOMMENDED_WINDOW_DAYS, load_config, save_config
+from src.config import (AUDIT, CHROME_REPORTS, CHROME_TELEMETRY, DEFAULTS, DIRECTORY, LICENSING,
+                        MAX_RECOMMENDED_WINDOW_DAYS, USAGE, load_config, save_config, scopes_for)
 
 BASE = Path(__file__).resolve().parent
 CONFIG = BASE / "config.yaml"
@@ -231,7 +232,8 @@ def main() -> int:
                  validate=lambda v: None if v in ("1", "2") else "Enter 1 or 2.")
     cfg["auth_mode"] = "oauth" if choice == "1" else "service_account"
 
-    scopes_csv = ",".join(ALLOWED_SCOPES)
+    choose_modules(cfg, pid)
+    scopes_csv = ",".join(scopes_for(cfg["modules"]))
     if cfg["auth_mode"] == "oauth":
         header("5a", "Create the OAuth desktop client")
         say("A) Consent screen (only needs doing once per project):")
@@ -287,11 +289,11 @@ def main() -> int:
 
     # Step 6
     header(6, "Scopes")
-    say("The tool asks for exactly these two read-only permissions, nothing else:")
-    say(f"  {ALLOWED_SCOPES[0]}   (Gemini audit events)")
-    say(f"  {ALLOWED_SCOPES[1]}   (user list, to find users with zero usage)")
+    cfg["scopes"] = scopes_for(cfg["modules"])
+    say("The tool asks for exactly these permissions, nothing else:")
+    for sc in cfg["scopes"]:
+        say(f"  {sc}   ({SCOPE_PURPOSE.get(sc, '')})")
     say("It refuses to run if config.yaml ever lists any other scope.")
-    cfg["scopes"] = list(ALLOWED_SCOPES)
 
     # Step 7
     header(7, "Run parameters")
@@ -341,6 +343,74 @@ def main() -> int:
     return 0
 
 
+SCOPE_PURPOSE = {
+    AUDIT: "audit logs: Gemini, Drive, Meet, Chat, Calendar, Classroom, sign-ins, OAuth apps, Chrome - read-only",
+    DIRECTORY: "user list, OUs, 2-Step Verification status - read-only",
+    USAGE: "usage reports: active users per app, email and Drive volumes, last sign-in - read-only",
+    LICENSING: "licence assignments - Google offers no read-only scope; the tool only lists",
+    CHROME_REPORTS: "installed Chrome apps and extensions - read-only",
+    CHROME_TELEMETRY: "ChromeOS device and app-usage telemetry - read-only",
+}
+
+
+def choose_modules(cfg: dict, pid: str) -> None:
+    """Ask which optional data sources to collect; tell the admin which APIs to enable."""
+    header("4b", "Choose what data to collect")
+    mods = dict(cfg.get("modules") or {})
+    say("Gemini usage and the user list are always collected. Optional extras:")
+    say("")
+    say("  A) Workspace audit logs: Drive, Meet, Chat, Calendar, Classroom, Keep, sign-ins,")
+    say("     third-party app grants, Chrome. Uses the same permission as Gemini.")
+    mods["activity_logs"] = yes_no("Collect Workspace audit logs?", mods.get("activity_logs", True))
+    say("\n  B) Usage reports: daily/weekly/monthly active users per app, emails sent and received,")
+    say("     Drive volumes, last sign-in per user. Adds one read-only permission.")
+    mods["usage_reports"] = yes_no("Collect usage reports?", mods.get("usage_reports", False))
+    say("\n  C) Licences: who holds which Workspace / Gemini licence, idle paid seats.")
+    say("     Needs the licensing permission, which Google only offers as read+write")
+    say("     (this tool only ever reads). Needs the Enterprise License Manager API.")
+    mods["licensing"] = yes_no("Collect licence assignments?", mods.get("licensing", False))
+    say("\n  D) Chrome management: installed extensions (e.g. AI tools) and ChromeOS app-usage")
+    say("     telemetry. Only useful with managed Chrome browsers or Chromebooks.")
+    say("     Adds two read-only permissions. Needs the Chrome Management API.")
+    mods["chrome"] = yes_no("Collect Chrome management data?", mods.get("chrome", False))
+    cfg["modules"] = mods
+    apis = [("licensing", "licensing.googleapis.com", "Enterprise License Manager API"),
+            ("chrome", "chromemanagement.googleapis.com", "Chrome Management API")]
+    needed = [(api, name) for m, api, name in apis if mods.get(m)]
+    if needed:
+        say("\nEnable these APIs in your project too (click Enable on each page):")
+        for api, name in needed:
+            say(f"  {name}: https://console.cloud.google.com/apis/library/{api}?project={pid}")
+        wait_for()
+    if mods.get("activity_logs") or mods.get("usage_reports"):
+        say("\nPer-person activity data can be subject to employee-monitoring rules. Make sure")
+        say("collecting it is authorised for this tenant. Use `python run.py --pseudonymise`")
+        say("to replace emails, names and titles in the output before sharing it.")
+
+
+def update_modules() -> int:
+    """`python setup.py --modules`: change data sources without redoing the whole setup."""
+    if not CONFIG.exists():
+        say("No config.yaml yet - run `python setup.py` first.")
+        return 1
+    cfg = load_config(CONFIG)
+    old = set(cfg["scopes"])
+    choose_modules(cfg, cfg.get("project_id", ""))
+    cfg["scopes"] = scopes_for(cfg["modules"])
+    save_config(cfg, CONFIG)
+    say(f"\nSaved {CONFIG}")
+    if set(cfg["scopes"]) != old:
+        if cfg["auth_mode"] == "oauth":
+            say("Permissions changed: the next `python run.py` opens the browser so you can")
+            say("sign in again and approve the new permissions.")
+        else:
+            say("Permissions changed. Update the domain-wide delegation entry for your service account at")
+            say("https://admin.google.com/ac/owl/domainwidedelegation with these scopes:")
+            say("  " + ",".join(cfg["scopes"]))
+    say("\nNow run:   python run.py")
+    return 0
+
+
 def _check_tz(v: str) -> str | None:
     try:
         from zoneinfo import ZoneInfo
@@ -367,7 +437,7 @@ def _explain_error(e: Exception, cfg: dict) -> str:
 
 if __name__ == "__main__":
     try:
-        sys.exit(main())
+        sys.exit(update_modules() if "--modules" in sys.argv[1:] else main())
     except KeyboardInterrupt:
         print("\nSetup stopped. Run `python setup.py` again to resume.")
         sys.exit(130)
