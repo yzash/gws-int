@@ -79,25 +79,57 @@ def private(path: Path) -> None:
         pass
 
 
-def place_file(target: Path, label: str) -> None:
-    """Let the admin either save the file in place or give us the downloaded path."""
-    say(f"\nSave it as:  {target}")
-    say("Or, if it is still in your Downloads folder, paste its full path below")
-    say("(tip: drag the file into this terminal window) and I will copy it for you.")
+def _find_downloads(pattern: str) -> list[Path]:
+    """Matching files in the usual download folders, newest first."""
+    found: list[Path] = []
+    for d in (Path.home() / "Downloads", Path.home() / "Desktop"):
+        if d.is_dir():
+            found.extend(d.glob(pattern))
+    return sorted(set(found), key=lambda p: p.stat().st_mtime, reverse=True)
+
+
+def _clean_path(v: str) -> Path:
+    # Terminals quote dragged paths or escape their spaces with backslashes.
+    v = v.strip().strip("'\"").replace("\\ ", " ")
+    return Path(v).expanduser()
+
+
+def place_file(target: Path, label: str, pattern: str | None = None) -> None:
+    """Find the downloaded file (or let the admin give its path) and copy it into place."""
+    if target.exists():
+        if yes_no(f"{target.name} is already here. Use it?", True):
+            private(target)
+            return
+    if pattern:
+        for cand in _find_downloads(pattern)[:3]:
+            say(f"\nFound {cand}")
+            if yes_no("Is this the file you just downloaded?", True):
+                shutil.copyfile(cand, target)
+                private(target)
+                say(f"  Copied to {target}")
+                return
+    say(f"\nI need the {label}. Either save it as:  {target}")
+    say("or drag the file from Finder / File Explorer into this terminal window and press Enter.")
     while True:
-        v = ask(f"Press Enter once {target.name} is in place, or paste the downloaded file's path",
+        v = ask(f"Press Enter once {target.name} is in place, or drag/paste the downloaded file's path",
                 default="")
         if v:
-            src = Path(v.strip().strip("'\"")).expanduser()
+            src = _clean_path(v)
+            if not src.exists() and any(c in str(src) for c in "*?"):
+                matches = sorted(src.parent.glob(src.name), key=lambda p: p.stat().st_mtime, reverse=True)
+                src = matches[0] if matches else src
             if not src.exists():
-                say(f"  I can't find {src}. Check the path and try again.")
+                say(f"  I can't find {src}.")
+                if pattern:
+                    say(f"  Its name should look like {pattern} (the * is a long ID). Dragging the file")
+                    say("  into this window is the easiest way to get the exact path.")
                 continue
             shutil.copyfile(src, target)
             say(f"  Copied to {target}")
         if target.exists():
             private(target)
             return
-        say(f"  {target} does not exist yet. Save the {label} there, then press Enter.")
+        say(f"  {target} does not exist yet.")
 
 
 def load_json(path: Path) -> tuple[dict | None, str | None]:
@@ -215,7 +247,7 @@ def main() -> int:
         say("   In the dialog, click Download JSON.")
         target = BASE / cfg.get("credentials_file", "credentials.json")
         while True:
-            place_file(target, "downloaded OAuth client JSON")
+            place_file(target, "downloaded OAuth client JSON", "client_secret_*.json")
             err = check_oauth_client(target)
             if not err:
                 say(f"  OK - {target.name} is a valid Desktop OAuth client.")
@@ -232,7 +264,7 @@ def main() -> int:
         say("   use the OAuth path instead, or ask your Cloud admin to allow it.)")
         target = BASE / cfg.get("service_account_file", "service-account.json")
         while True:
-            place_file(target, "downloaded service-account key")
+            place_file(target, "downloaded service-account key", f"{pid}-*.json")
             err, client_id = check_service_account(target)
             if not err:
                 break
