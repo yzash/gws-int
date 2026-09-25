@@ -14,7 +14,7 @@ TEMPLATE_DIR = Path(__file__).resolve().parent.parent / "templates"
 
 APP_LABELS = {
     "gmail": "Gmail", "docs": "Docs", "sheets": "Sheets", "slides": "Slides",
-    "drive": "Drive", "chat": "Chat", "meet": "Meet", "gemini_app": "Gemini app",
+    "drive": "Drive", "chat": "Chat", "meet": "Meet", "calendar": "Calendar", "workflows": "Workflows", "gemini_app": "Gemini app",
     "other": "Other",
 }
 

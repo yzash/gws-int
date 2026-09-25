@@ -1,7 +1,7 @@
 # Gemini Usage Tracker for Google Workspace
 
 See who in your organization uses Gemini in Gmail, Docs, Sheets, Slides, Drive,
-Chat, Meet and the Gemini app, how often, and when they last used it.
+Chat, Meet, Calendar, Workflows and the Gemini app, how often, and when they last used it.
 
 The tool reads your tenant's Gemini audit log (Admin SDK Reports API,
 `gemini_in_workspace_apps`), joins it with your user directory so people with
@@ -95,7 +95,7 @@ files below into `output/`, and opens the dashboard in your browser.
 | File | One row per | Columns |
 | --- | --- | --- |
 | `raw_events_YYYY-MM-DD.csv` | Gemini event | timestamp, user_email, app, feature, action, event_name, ip, event_type, other_params |
-| `user_summary_YYYY-MM-DD.csv` | user | user_email, name, ou_path, suspended, total_actions, gmail, docs, sheets, slides, drive, chat, meet, gemini_app, other, distinct_features, active_days, first_used, last_used, tier |
+| `user_summary_YYYY-MM-DD.csv` | user | user_email, name, ou_path, suspended, total_actions, gmail, docs, sheets, slides, drive, chat, meet, calendar, workflows, gemini_app, other, distinct_features, active_days, first_used, last_used, tier |
 | `org_summary_YYYY-MM-DD.csv` | metric | metric, value |
 | `dashboard.html` (and `dashboard_YYYY-MM-DD.html`) | — | headline tiles, actions by app, users by tier, top 20 users, top 10 features, adoption by OU, zero-usage users by OU |
 | `raw_YYYY-MM-DD.json` | — | the untouched API response, so the report can be rebuilt without calling Google again |

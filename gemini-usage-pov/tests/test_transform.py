@@ -63,6 +63,8 @@ def test_app_normalisation(events):
     assert transform.normalise_app("Google Docs") == "docs"
     assert transform.normalise_app("dynamite") == "chat"
     assert transform.normalise_app("bard") == "gemini_app"
+    assert transform.normalise_app("calendar") == "calendar"
+    assert transform.normalise_app("workflows") == "workflows"
     assert transform.normalise_app("some_new_app") == "other"
     assert transform.normalise_app(None) == "other"
 
