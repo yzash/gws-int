@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemini Usage Report</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f6f6f4; --surface: #fcfcfb; --border: #e3e2de;
+    --text: #0b0b0b; --text-2: #52514e; --muted: #7a7974;
+    --bar: #2a78d6; --bar-zero: #b9b8b2; --track: #efeeea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #111110; --surface: #1a1a19; --border: #2e2e2c;
+      --text: #ffffff; --text-2: #c3c2b7; --muted: #8f8e87;
+      --bar: #3987e5; --bar-zero: #5d5c57; --track: #252524;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #111110; --surface: #1a1a19; --border: #2e2e2c;
+    --text: #ffffff; --text-2: #c3c2b7; --muted: #8f8e87;
+    --bar: #3987e5; --bar-zero: #5d5c57; --track: #252524;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 48px; }
+  header h1 { font-size: 22px; margin: 0 0 4px; }
+  header p { margin: 0; color: var(--text-2); }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 20px 0; }
+  .tile, .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+  .tile { padding: 14px 16px; }
+  .tile .label { color: var(--text-2); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  .tile .value { font-size: 28px; font-weight: 650; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .tile .sub { color: var(--muted); font-size: 12px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; margin-bottom: 12px; }
+  .card { padding: 16px; margin-bottom: 12px; min-width: 0; }
+  .card h2 { font-size: 15px; margin: 0 0 12px; }
+  .card .note { color: var(--muted); font-size: 12px; margin: -6px 0 12px; }
+  .bar-row { display: grid; grid-template-columns: 96px 1fr 56px; align-items: center; gap: 10px; padding: 4px 0; }
+  .bar-row .name { color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar-row .track { height: 14px; background: var(--track); border-radius: 0 4px 4px 0; }
+  .bar-row .fill { height: 100%; background: var(--bar); border-radius: 0 4px 4px 0; min-width: 2px; }
+  .bar-row .fill.zero { background: var(--bar-zero); }
+  .bar-row .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .bar-row:hover .fill { filter: brightness(1.12); }
+  .scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--text-2); font-weight: 600; font-size: 12px; }
+  td.n, th.n { text-align: right; }
+  td.dim { color: var(--muted); }
+  .ou { margin-bottom: 14px; }
+  .ou h3 { font-size: 13px; margin: 0 0 6px; }
+  .ou h3 span { color: var(--muted); font-weight: 400; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { border: 1px solid var(--border); border-radius: 999px; padding: 2px 10px; font-size: 12px; color: var(--text-2); }
+  footer { color: var(--muted); font-size: 12px; margin-top: 24px; }
+  .pos { color: #1a7f37; } .neg { color: #c62828; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pos { color: #57c26f; } :root:not([data-theme="light"]) .neg { color: #ef6b6b; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Gemini usage in Google Workspace{% if tenant_label %} · {{ tenant_label }}{% endif %}</h1>
+    <p>{{ window }} ({{ window_days }} days) · generated {{ generated_at }}</p>
+  </header>
+
+  <section class="tiles">
+    {% for t in tiles %}
+    <div class="tile"><div class="label">{{ t.label }}</div><div class="value">{{ t.value }}</div>{% if t.sub %}<div class="sub">{{ t.sub }}</div>{% endif %}</div>
+    {% endfor %}
+  </section>
+
+  {% if comparison %}
+  <section class="card">
+    <h2>Change since previous run</h2>
+    <div class="scroll"><table>
+      <tr><th>Metric</th><th class="n">Previous</th><th class="n">Current</th><th class="n">Change</th></tr>
+      {% for r in comparison %}
+      <tr><td>{{ r.metric }}</td><td class="n">{{ '{:,g}'.format(r.previous) }}</td><td class="n">{{ '{:,g}'.format(r.current) }}</td>
+          <td class="n {{ 'pos' if r.change > 0 else ('neg' if r.change < 0 else '') }}">{{ '{:+g}'.format(r.change) }}</td></tr>
+      {% endfor %}
+    </table></div>
+  </section>
+  {% endif %}
+
+  <section class="grid2">
+    <div class="card">
+      <h2>Gemini actions by app</h2>
+      {% for b in by_app %}
+      <div class="bar-row" title="{{ b.label }}: {{ '{:,}'.format(b.value) }} actions">
+        <span class="name">{{ b.label }}</span>
+        <div class="track"><div class="fill" style="width: {{ b.pct }}%"></div></div>
+        <span class="num">{{ '{:,}'.format(b.value) }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="card">
+      <h2>Users by usage tier</h2>
+      <p class="note">Zero = 0 actions · Low = 1–4 · Medium = 5–19 · High = 20+</p>
+      {% for b in by_tier %}
+      <div class="bar-row" title="{{ b.label }}: {{ '{:,}'.format(b.value) }} users">
+        <span class="name">{{ b.label }}</span>
+        <div class="track"><div class="fill{{ ' zero' if b.label == 'Zero' else '' }}" style="width: {{ b.pct }}%"></div></div>
+        <span class="num">{{ '{:,}'.format(b.value) }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Top {{ top_users|length }} users by Gemini actions</h2>
+    {% if top_users %}
+    <div class="scroll"><table>
+      <tr><th>#</th><th>User</th><th>OU</th><th class="n">Actions</th><th>Tier</th><th>By app</th><th>Last used</th></tr>
+      {% for u in top_users %}
+      <tr><td class="dim">{{ loop.index }}</td>
+          <td>{{ u.email }}{% if u.name %}<br><span class="dim">{{ u.name }}</span>{% endif %}</td>
+          <td class="dim">{{ u.ou }}</td><td class="n">{{ '{:,}'.format(u.actions) }}</td>
+          <td>{{ u.tier }}</td><td class="dim">{{ u.apps }}</td><td>{{ u.last_used }}</td></tr>
+      {% endfor %}
+    </table></div>
+    {% else %}<p class="dim">No Gemini activity in this window.</p>{% endif %}
+  </section>
+
+  <section class="grid2">
+    <div class="card">
+      <h2>Top features</h2>
+      {% if top_features %}
+      <div class="scroll"><table>
+        <tr><th>Feature</th><th class="n">Actions</th><th class="n">Users</th></tr>
+        {% for f in top_features %}
+        <tr><td>{{ f.feature }}</td><td class="n">{{ '{:,}'.format(f.actions) }}</td><td class="n">{{ f.users }}</td></tr>
+        {% endfor %}
+      </table></div>
+      {% else %}<p class="dim">No feature data in this window.</p>{% endif %}
+    </div>
+    <div class="card">
+      <h2>Adoption by organizational unit</h2>
+      <div class="scroll"><table>
+        <tr><th>OU</th><th class="n">Users</th><th class="n">Active</th><th class="n">Adoption</th></tr>
+        {% for o in ou_rows %}
+        <tr><td>{{ o.ou_path }}</td><td class="n">{{ o.users }}</td><td class="n">{{ o.active_users }}</td><td class="n">{{ o.adoption_pct }}%</td></tr>
+        {% endfor %}
+      </table></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Users with zero Gemini usage ({{ zero_count }})</h2>
+    <p class="note">Grouped by OU, for targeting enablement and training.</p>
+    {% for g in zero_by_ou %}
+    <div class="ou">
+      <h3>{{ g.ou }} <span>· {{ g.users|length }} user{{ '' if g.users|length == 1 else 's' }}</span></h3>
+      <div class="chips">{% for u in g.users %}<span class="chip" title="{{ u.name }}">{{ u.email }}</span>{% endfor %}</div>
+    </div>
+    {% else %}<p class="dim">Every user in scope used Gemini at least once.</p>{% endfor %}
+  </section>
+
+  <footer>
+    Source: Admin SDK Reports API (gemini_in_workspace_apps) joined with the Directory API.
+    Contains per-user usage data — check local employee-monitoring rules (e.g. PDPA) with HR/legal before sharing beyond IT.
+    No prompt or response content is collected.
+  </footer>
+</main>
+</body>
+</html>

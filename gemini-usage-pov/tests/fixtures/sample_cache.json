@@ -1,0 +1,2497 @@
+{
+ "fetched_at": "2026-09-24T12:00:00.000Z",
+ "start_time": "2026-08-27T12:00:00.000Z",
+ "end_time": "2026-09-24T12:00:00.000Z",
+ "activities": [
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-24T10:00:00.000Z",
+    "uniqueQualifier": "1059",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag59\"",
+   "actor": {
+    "email": "user2@example.com",
+    "profileId": "9059"
+   },
+   "ipAddress": "203.0.113.59",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "GMAIL"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_write"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      },
+      {
+       "name": "surface_id",
+       "value": "compose"
+      },
+      {
+       "name": "tags",
+       "multiValue": [
+        "a",
+        "b"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-24T09:00:00.000Z",
+    "uniqueQualifier": "1060",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag60\"",
+   "actor": {
+    "email": "user4@example.com",
+    "profileId": "9060"
+   },
+   "ipAddress": "203.0.113.60",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "some_new_app"
+      },
+      {
+       "name": "action",
+       "value": "ask"
+      },
+      {
+       "name": "feature_source",
+       "value": "chat_prompt"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-24T08:00:00.000Z",
+    "uniqueQualifier": "1061",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag61\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9061"
+   },
+   "ipAddress": "203.0.113.61",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_feedback",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "gmail"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_write"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-24T04:00:00.000Z",
+    "uniqueQualifier": "1036",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag36\"",
+   "actor": {
+    "email": "user2@example.com",
+    "profileId": "9036"
+   },
+   "ipAddress": "203.0.113.36",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "meet"
+      },
+      {
+       "name": "action",
+       "value": "ask"
+      },
+      {
+       "name": "feature_source",
+       "value": "summarize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-23T15:00:00.000Z",
+    "uniqueQualifier": "1033",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag33\"",
+   "actor": {
+    "email": "user2@example.com",
+    "profileId": "9033"
+   },
+   "ipAddress": "203.0.113.33",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "slides"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_create"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-23T12:00:00.000Z",
+    "uniqueQualifier": "1057",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag57\"",
+   "actor": {
+    "email": "user11@example.com",
+    "profileId": "9057"
+   },
+   "ipAddress": "203.0.113.57",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "docs"
+      },
+      {
+       "name": "action",
+       "value": "summarize"
+      },
+      {
+       "name": "feature_source",
+       "value": "summarize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-22T15:00:00.000Z",
+    "uniqueQualifier": "1014",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag14\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9014"
+   },
+   "ipAddress": "203.0.113.14",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "meet"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-22T12:00:00.000Z",
+    "uniqueQualifier": "1058",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag58\"",
+   "actor": {
+    "email": "user11@example.com",
+    "profileId": "9058"
+   },
+   "ipAddress": "203.0.113.58",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "docs"
+      },
+      {
+       "name": "action",
+       "value": "summarize"
+      },
+      {
+       "name": "feature_source",
+       "value": "summarize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-22T05:00:00.000Z",
+    "uniqueQualifier": "1015",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag15\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9015"
+   },
+   "ipAddress": "203.0.113.15",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "gemini_app"
+      },
+      {
+       "name": "action",
+       "value": "refine"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-21T20:00:00.000Z",
+    "uniqueQualifier": "1054",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag54\"",
+   "actor": {
+    "email": "user9@example.com",
+    "profileId": "9054"
+   },
+   "ipAddress": "203.0.113.54",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "docs"
+      },
+      {
+       "name": "action",
+       "value": "refine"
+      },
+      {
+       "name": "feature_source",
+       "value": "side_panel"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-21T19:00:00.000Z",
+    "uniqueQualifier": "1012",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag12\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9012"
+   },
+   "ipAddress": "203.0.113.12",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "drive"
+      },
+      {
+       "name": "action",
+       "value": "ask"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_write"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-21T10:00:00.000Z",
+    "uniqueQualifier": "1009",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag9\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9009"
+   },
+   "ipAddress": "203.0.113.9",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "docs"
+      },
+      {
+       "name": "action",
+       "value": "refine"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-21T08:00:00.000Z",
+    "uniqueQualifier": "1030",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag30\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9030"
+   },
+   "ipAddress": "203.0.113.30",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "meet"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_write"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-20T16:00:00.000Z",
+    "uniqueQualifier": "1037",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag37\"",
+   "actor": {
+    "email": "user2@example.com",
+    "profileId": "9037"
+   },
+   "ipAddress": "203.0.113.37",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "gemini_app"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "summarize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-20T09:00:00.000Z",
+    "uniqueQualifier": "1002",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag2\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9002"
+   },
+   "ipAddress": "203.0.113.2",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "sheets"
+      },
+      {
+       "name": "action",
+       "value": "summarize"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-19T18:00:00.000Z",
+    "uniqueQualifier": "1056",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag56\"",
+   "actor": {
+    "email": "user9@example.com",
+    "profileId": "9056"
+   },
+   "ipAddress": "203.0.113.56",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "slides"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-18T05:00:00.000Z",
+    "uniqueQualifier": "1004",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag4\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9004"
+   },
+   "ipAddress": "203.0.113.4",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "drive"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "side_panel"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-17T14:00:00.000Z",
+    "uniqueQualifier": "1005",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag5\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9005"
+   },
+   "ipAddress": "203.0.113.5",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "chat"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "side_panel"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-17T12:00:00.000Z",
+    "uniqueQualifier": "1052",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag52\"",
+   "actor": {
+    "email": "user4@example.com",
+    "profileId": "9052"
+   },
+   "ipAddress": "203.0.113.52",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "drive"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-17T11:00:00.000Z",
+    "uniqueQualifier": "1022",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag22\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9022"
+   },
+   "ipAddress": "203.0.113.22",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "meet"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "take_notes"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-17T10:00:00.000Z",
+    "uniqueQualifier": "1050",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag50\"",
+   "actor": {
+    "email": "user4@example.com",
+    "profileId": "9050"
+   },
+   "ipAddress": "203.0.113.50",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "sheets"
+      },
+      {
+       "name": "action",
+       "value": "summarize"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_write"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-17T10:00:00.000Z",
+    "uniqueQualifier": "1053",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag53\"",
+   "actor": {
+    "email": "user5@example.com",
+    "profileId": "9053"
+   },
+   "ipAddress": "203.0.113.53",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "docs"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_write"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-16T18:00:00.000Z",
+    "uniqueQualifier": "1042",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag42\"",
+   "actor": {
+    "email": "user2@example.com",
+    "profileId": "9042"
+   },
+   "ipAddress": "203.0.113.42",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "drive"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-16T15:00:00.000Z",
+    "uniqueQualifier": "1021",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag21\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9021"
+   },
+   "ipAddress": "203.0.113.21",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "chat"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_create"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-16T10:00:00.000Z",
+    "uniqueQualifier": "1023",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag23\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9023"
+   },
+   "ipAddress": "203.0.113.23",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "gemini_app"
+      },
+      {
+       "name": "action",
+       "value": "ask"
+      },
+      {
+       "name": "feature_source",
+       "value": "take_notes"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-16T08:00:00.000Z",
+    "uniqueQualifier": "1008",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag8\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9008"
+   },
+   "ipAddress": "203.0.113.8",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "gmail"
+      },
+      {
+       "name": "action",
+       "value": "refine"
+      },
+      {
+       "name": "feature_source",
+       "value": "chat_prompt"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-16T08:00:00.000Z",
+    "uniqueQualifier": "1026",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag26\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9026"
+   },
+   "ipAddress": "203.0.113.26",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "sheets"
+      },
+      {
+       "name": "action",
+       "value": "summarize"
+      },
+      {
+       "name": "feature_source",
+       "value": "smart_compose"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-15T22:00:00.000Z",
+    "uniqueQualifier": "1016",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag16\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9016"
+   },
+   "ipAddress": "203.0.113.16",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "gmail"
+      },
+      {
+       "name": "action",
+       "value": "ask"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_write"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-14T23:00:00.000Z",
+    "uniqueQualifier": "1035",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag35\"",
+   "actor": {
+    "email": "user2@example.com",
+    "profileId": "9035"
+   },
+   "ipAddress": "203.0.113.35",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "chat"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "take_notes"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-13T21:00:00.000Z",
+    "uniqueQualifier": "1040",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag40\"",
+   "actor": {
+    "email": "user2@example.com",
+    "profileId": "9040"
+   },
+   "ipAddress": "203.0.113.40",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "sheets"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "side_panel"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-13T03:00:00.000Z",
+    "uniqueQualifier": "1041",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag41\"",
+   "actor": {
+    "email": "user2@example.com",
+    "profileId": "9041"
+   },
+   "ipAddress": "203.0.113.41",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "slides"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "side_panel"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-13T01:00:00.000Z",
+    "uniqueQualifier": "1010",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag10\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9010"
+   },
+   "ipAddress": "203.0.113.10",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "sheets"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "chat_prompt"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-13T01:00:00.000Z",
+    "uniqueQualifier": "1017",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag17\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9017"
+   },
+   "ipAddress": "203.0.113.17",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "docs"
+      },
+      {
+       "name": "action",
+       "value": "summarize"
+      },
+      {
+       "name": "feature_source",
+       "value": "take_notes"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-12T18:00:00.000Z",
+    "uniqueQualifier": "1013",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag13\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9013"
+   },
+   "ipAddress": "203.0.113.13",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "chat"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_create"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-12T01:00:00.000Z",
+    "uniqueQualifier": "1028",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag28\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9028"
+   },
+   "ipAddress": "203.0.113.28",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "drive"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "chat_prompt"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-11T16:00:00.000Z",
+    "uniqueQualifier": "1025",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag25\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9025"
+   },
+   "ipAddress": "203.0.113.25",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "docs"
+      },
+      {
+       "name": "action",
+       "value": "ask"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-11T15:00:00.000Z",
+    "uniqueQualifier": "1048",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag48\"",
+   "actor": {
+    "email": "user3@example.com",
+    "profileId": "9048"
+   },
+   "ipAddress": "203.0.113.48",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "meet"
+      },
+      {
+       "name": "action",
+       "value": "refine"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-11T11:00:00.000Z",
+    "uniqueQualifier": "1003",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag3\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9003"
+   },
+   "ipAddress": "203.0.113.3",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "slides"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_write"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-10T00:00:00.000Z",
+    "uniqueQualifier": "1020",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag20\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9020"
+   },
+   "ipAddress": "203.0.113.20",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "drive"
+      },
+      {
+       "name": "action",
+       "value": "summarize"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-09T18:00:00.000Z",
+    "uniqueQualifier": "1006",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag6\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9006"
+   },
+   "ipAddress": "203.0.113.6",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "meet"
+      },
+      {
+       "name": "action",
+       "value": "summarize"
+      },
+      {
+       "name": "feature_source",
+       "value": "chat_prompt"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-07T22:00:00.000Z",
+    "uniqueQualifier": "1049",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag49\"",
+   "actor": {
+    "email": "user4@example.com",
+    "profileId": "9049"
+   },
+   "ipAddress": "203.0.113.49",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "docs"
+      },
+      {
+       "name": "action",
+       "value": "ask"
+      },
+      {
+       "name": "feature_source",
+       "value": "take_notes"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-07T21:00:00.000Z",
+    "uniqueQualifier": "1029",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag29\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9029"
+   },
+   "ipAddress": "203.0.113.29",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "chat"
+      },
+      {
+       "name": "action",
+       "value": "summarize"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-07T07:00:00.000Z",
+    "uniqueQualifier": "1045",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag45\"",
+   "actor": {
+    "email": "user3@example.com",
+    "profileId": "9045"
+   },
+   "ipAddress": "203.0.113.45",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "slides"
+      },
+      {
+       "name": "action",
+       "value": "ask"
+      },
+      {
+       "name": "feature_source",
+       "value": "summarize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-07T04:00:00.000Z",
+    "uniqueQualifier": "1027",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag27\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9027"
+   },
+   "ipAddress": "203.0.113.27",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "slides"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-05T19:00:00.000Z",
+    "uniqueQualifier": "1051",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag51\"",
+   "actor": {
+    "email": "user4@example.com",
+    "profileId": "9051"
+   },
+   "ipAddress": "203.0.113.51",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "slides"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "take_notes"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-05T10:00:00.000Z",
+    "uniqueQualifier": "1031",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag31\"",
+   "actor": {
+    "email": "user2@example.com",
+    "profileId": "9031"
+   },
+   "ipAddress": "203.0.113.31",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "docs"
+      },
+      {
+       "name": "action",
+       "value": "ask"
+      },
+      {
+       "name": "feature_source",
+       "value": "summarize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-05T06:00:00.000Z",
+    "uniqueQualifier": "1038",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag38\"",
+   "actor": {
+    "email": "user2@example.com",
+    "profileId": "9038"
+   },
+   "ipAddress": "203.0.113.38",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "gmail"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_create"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-04T23:00:00.000Z",
+    "uniqueQualifier": "1046",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag46\"",
+   "actor": {
+    "email": "user3@example.com",
+    "profileId": "9046"
+   },
+   "ipAddress": "203.0.113.46",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "drive"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_create"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-04T22:00:00.000Z",
+    "uniqueQualifier": "1032",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag32\"",
+   "actor": {
+    "email": "user2@example.com",
+    "profileId": "9032"
+   },
+   "ipAddress": "203.0.113.32",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "sheets"
+      },
+      {
+       "name": "action",
+       "value": "ask"
+      },
+      {
+       "name": "feature_source",
+       "value": "chat_prompt"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-04T07:00:00.000Z",
+    "uniqueQualifier": "1019",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag19\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9019"
+   },
+   "ipAddress": "203.0.113.19",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "slides"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_write"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-02T21:00:00.000Z",
+    "uniqueQualifier": "1055",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag55\"",
+   "actor": {
+    "email": "user9@example.com",
+    "profileId": "9055"
+   },
+   "ipAddress": "203.0.113.55",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "sheets"
+      },
+      {
+       "name": "action",
+       "value": "refine"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-02T02:00:00.000Z",
+    "uniqueQualifier": "1024",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag24\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9024"
+   },
+   "ipAddress": "203.0.113.24",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "gmail"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-01T15:00:00.000Z",
+    "uniqueQualifier": "1018",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag18\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9018"
+   },
+   "ipAddress": "203.0.113.18",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "sheets"
+      },
+      {
+       "name": "action",
+       "value": "refine"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-09-01T04:00:00.000Z",
+    "uniqueQualifier": "1001",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag1\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9001"
+   },
+   "ipAddress": "203.0.113.1",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "docs"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_write"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    },
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "docs"
+      },
+      {
+       "name": "feature_source",
+       "value": "summarize"
+      },
+      {
+       "name": "action",
+       "value": "summarize"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-08-31T22:00:00.000Z",
+    "uniqueQualifier": "1011",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag11\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9011"
+   },
+   "ipAddress": "203.0.113.11",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "slides"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_create"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-08-31T21:00:00.000Z",
+    "uniqueQualifier": "1043",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag43\"",
+   "actor": {
+    "email": "user3@example.com",
+    "profileId": "9043"
+   },
+   "ipAddress": "203.0.113.43",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "docs"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_write"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-08-31T08:00:00.000Z",
+    "uniqueQualifier": "1044",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag44\"",
+   "actor": {
+    "email": "user3@example.com",
+    "profileId": "9044"
+   },
+   "ipAddress": "203.0.113.44",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "sheets"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_write"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-08-31T07:00:00.000Z",
+    "uniqueQualifier": "1007",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag7\"",
+   "actor": {
+    "email": "user1@example.com",
+    "profileId": "9007"
+   },
+   "ipAddress": "203.0.113.7",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "gemini_app"
+      },
+      {
+       "name": "action",
+       "value": "generate"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_create"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-08-31T07:00:00.000Z",
+    "uniqueQualifier": "1039",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag39\"",
+   "actor": {
+    "email": "user2@example.com",
+    "profileId": "9039"
+   },
+   "ipAddress": "203.0.113.39",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "docs"
+      },
+      {
+       "name": "action",
+       "value": "refine"
+      },
+      {
+       "name": "feature_source",
+       "value": "summarize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-08-31T04:00:00.000Z",
+    "uniqueQualifier": "1034",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag34\"",
+   "actor": {
+    "email": "user2@example.com",
+    "profileId": "9034"
+   },
+   "ipAddress": "203.0.113.34",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "drive"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_write"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "admin#reports#activity",
+   "id": {
+    "time": "2026-08-30T14:00:00.000Z",
+    "uniqueQualifier": "1047",
+    "applicationName": "gemini_in_workspace_apps",
+    "customerId": "C0example"
+   },
+   "etag": "\"etag47\"",
+   "actor": {
+    "email": "user3@example.com",
+    "profileId": "9047"
+   },
+   "ipAddress": "203.0.113.47",
+   "events": [
+    {
+     "type": "ai_usage_event",
+     "name": "feature_utilization",
+     "parameters": [
+      {
+       "name": "app_name",
+       "value": "chat"
+      },
+      {
+       "name": "action",
+       "value": "insert"
+      },
+      {
+       "name": "feature_source",
+       "value": "help_me_organize"
+      },
+      {
+       "name": "event_category",
+       "value": "generative_ai"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "users": [
+  {
+   "primaryEmail": "user1@example.com",
+   "name": {
+    "fullName": "User One"
+   },
+   "orgUnitPath": "/Sales",
+   "suspended": false
+  },
+  {
+   "primaryEmail": "user2@example.com",
+   "name": {
+    "fullName": "User Two"
+   },
+   "orgUnitPath": "/Sales",
+   "suspended": false
+  },
+  {
+   "primaryEmail": "user3@example.com",
+   "name": {
+    "fullName": "User Three"
+   },
+   "orgUnitPath": "/Sales/APAC",
+   "suspended": false
+  },
+  {
+   "primaryEmail": "user4@example.com",
+   "name": {
+    "fullName": "User Four"
+   },
+   "orgUnitPath": "/Engineering",
+   "suspended": false
+  },
+  {
+   "primaryEmail": "user5@example.com",
+   "name": {
+    "fullName": "User Five"
+   },
+   "orgUnitPath": "/Engineering",
+   "suspended": false
+  },
+  {
+   "primaryEmail": "user6@example.com",
+   "name": {
+    "fullName": "User Six"
+   },
+   "orgUnitPath": "/Engineering",
+   "suspended": false
+  },
+  {
+   "primaryEmail": "user7@example.com",
+   "name": {
+    "fullName": "User Seven"
+   },
+   "orgUnitPath": "/Sales/APAC",
+   "suspended": false
+  },
+  {
+   "primaryEmail": "user8@example.com",
+   "name": {
+    "fullName": "User Eight"
+   },
+   "orgUnitPath": "/",
+   "suspended": false
+  },
+  {
+   "primaryEmail": "user9@example.com",
+   "name": {
+    "fullName": "User Nine"
+   },
+   "orgUnitPath": "/Sales",
+   "suspended": true
+  },
+  {
+   "primaryEmail": "user10@example.com",
+   "name": {
+    "fullName": "User Ten"
+   },
+   "orgUnitPath": "/Engineering",
+   "suspended": true
+  }
+ ]
+}

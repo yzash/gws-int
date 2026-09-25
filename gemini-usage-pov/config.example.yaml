@@ -1,0 +1,35 @@
+# Copy of the settings the setup wizard (python setup.py) writes to config.yaml.
+# You normally do not need to edit this by hand.
+
+project_id: gemini-usage-pov          # Google Cloud project ID (for reference only)
+auth_mode: oauth                      # "oauth" (recommended) or "service_account"
+credentials_file: credentials.json    # OAuth desktop client JSON (oauth mode)
+token_file: token.json                # created automatically after first sign-in
+service_account_file: service-account.json   # service_account mode only
+impersonate_user: ""                  # service_account mode only: admin email to act as
+customer_id: my_customer              # "my_customer" = the tenant of the signed-in admin
+
+window_days: 28                       # reporting window, counted back from now
+include_suspended: false              # include suspended users in summaries
+timezone: UTC                         # used for "active days" (e.g. Asia/Singapore)
+
+# Only events with these names count as Gemini usage in the summaries.
+# Every event is still written to raw_events.csv. The run log lists any other
+# event names it sees, so you can add them here if needed.
+usage_event_names:
+  - feature_utilization
+
+# Optional (F10): only include users whose OU path starts with one of these.
+# Example: ["/Sales", "/Engineering/APAC"]. Empty = whole tenant.
+ou_filter: []
+
+# Optional: override which audit-log parameter names feed each column, if your
+# tenant's data uses different names. Example:
+#   param_map:
+#     feature: [feature_source, action]
+param_map: {}
+
+# Read-only scopes. The tool refuses to run if anything else is listed here.
+scopes:
+  - https://www.googleapis.com/auth/admin.reports.audit.readonly
+  - https://www.googleapis.com/auth/admin.directory.user.readonly

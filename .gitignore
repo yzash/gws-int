@@ -1,0 +1,14 @@
+# Secrets and tenant data - never commit these
+credentials.json
+service-account.json
+token.json
+output/*
+!output/.gitkeep
+config.yaml
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
