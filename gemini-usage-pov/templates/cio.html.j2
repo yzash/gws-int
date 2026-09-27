@@ -132,7 +132,7 @@ footer { color: var(--muted); font-size: 12px; margin-top: 28px; }
 <body>
 <main>
   <header>
-    <h1>{{ title }}</h1>
+    <h1>{{ title }}{% if meta.demo %} <span class="pill flag" style="font-size:12px;vertical-align:middle">Demo · fictional data</span>{% endif %}</h1>
     <span class="meta" id="meta"></span>
   </header>
   <div class="bar" id="bar">
@@ -662,7 +662,8 @@ function render() {
   ({overview, usecases, teams, people, engagement}[S.tab] || overview)(c);
   if (S.user != null) drawUser();
 }
-$("#foot").innerHTML = `Source: Google Workspace Gemini audit log (Admin SDK Reports API), ${esc(M.tz)} · generated ${esc(M.generated)}${M.pseudonymised ? " · <b>pseudonymised</b>" : ""}.
+$("#foot").innerHTML = M.demo ? `<b>Demo with fictional data.</b> The company, people, names, org units and every number are invented to show what the dashboard does with a real Google Workspace tenant's Gemini audit log. All processing happens in this page.` :
+  `Source: Google Workspace Gemini audit log (Admin SDK Reports API), ${esc(M.tz)} · generated ${esc(M.generated)}${M.pseudonymised ? " · <b>pseudonymised</b>" : ""}.
   All processing happens in this page; nothing is sent anywhere. Contains per-person usage data — share only where authorised.
   Google's logs contain no prompt or response content.`;
 buildMenus(); render();
