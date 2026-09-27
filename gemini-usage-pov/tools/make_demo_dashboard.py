@@ -35,33 +35,39 @@ LAST = ["Anderson", "Bakker", "Chen", "Costa", "Das", "Dubois", "Evans", "Fernan
         "Sato", "Schmidt", "Shah", "Sharma", "Silva", "Singh", "Tan", "Taylor", "Tran", "Vargas", "Wang", "Weber",
         "Wong", "Yamamoto", "Yilmaz", "Zhang"]
 
+# Only apps that appeared in a real tenant's Gemini audit log during testing are used
+# (gmail, docs, sheets, drive, meet, calendar, workflows, gemini_app), so the demo never
+# shows a breakdown the real tool could not produce. Feature / action values come from
+# Google's documented lists for this log.
+TESTED_APPS = {"gmail", "docs", "sheets", "drive", "meet", "calendar", "workflows", "gemini_app"}
+
 # OU -> (share of headcount, adoption propensity, preferred (app, feature, action) combos)
 W = ("gmail", "help_me_write", "generate_text")
+NOTES = ("meet", "take_notes_for_me", "classic_use_case_meet_take_notes_for_me_session")
 OUS = {
-    "/Leadership":            (0.04, 1.4, [W, ("gmail", "side_panel", "summarize"), ("docs", "side_panel", "summarize_file"),
-                                           ("meet", "take_notes_for_me", "classic_use_case_meet_take_notes_for_me_session")]),
-    "/Sales/APAC":            (0.12, 1.2, [W, ("gmail", "help_me_refine", "formalize"), ("slides", "help_me_write", "generate_text"),
-                                           ("meet", "take_notes_for_me", "classic_use_case_meet_take_notes_for_me_session")]),
-    "/Sales/EMEA":            (0.10, 0.9, [W, ("gmail", "side_panel", "summarize"), ("slides", "help_me_write", "generate_text")]),
+    "/Leadership":            (0.04, 1.4, [W, ("gmail", "side_panel", "summarize"), ("docs", "side_panel", "summarize_file"), NOTES]),
+    "/Sales/APAC":            (0.12, 1.2, [W, ("gmail", "help_me_refine", "formalize"), NOTES,
+                                           ("calendar", "help_me_schedule", "suggest_time")]),
+    "/Sales/EMEA":            (0.10, 0.9, [W, ("gmail", "side_panel", "summarize"), NOTES]),
     "/Sales/Americas":        (0.10, 0.7, [W, ("docs", "help_me_write", "generate_document")]),
-    "/Marketing":             (0.09, 1.5, [("slides", "help_me_visualize", "generate_images_in_product"),
-                                           ("vids", "side_panel", "generate_videos_in_product"), ("docs", "help_me_write", "generate_document"),
-                                           ("docs", "help_me_refine", "paraphrase")]),
+    "/Marketing":             (0.09, 1.5, [("docs", "help_me_visualize", "generate_image_for_current_page"),
+                                           ("docs", "help_me_write", "generate_document"), ("docs", "help_me_refine", "paraphrase"),
+                                           ("gemini_app", "chat_with_gemini", "conversation")]),
     "/Engineering/Platform":  (0.13, 1.1, [("sheets", "ai_function", "generate_ai_function_response"), ("gemini_app", "chat_with_gemini", "conversation"),
                                            ("docs", "side_panel", "summarize_file"), ("workflows", "workflows_execution", "")]),
     "/Engineering/Product":   (0.12, 1.0, [("gemini_app", "chat_with_gemini", "conversation"), ("docs", "help_me_write", "generate_document"),
-                                           ("drive", "side_panel", "summarize_drive_homepage_doclist_files"), ("chat", "side_panel", "summarize")]),
+                                           ("drive", "side_panel", "summarize_drive_homepage_doclist_files"), NOTES]),
     "/Finance":               (0.07, 0.6, [("sheets", "enhanced_smart_fill", "classic_use_case_sheets_turbofill"),
                                            ("sheets", "ai_function", "generate_ai_function_response"), ("gmail", "side_panel", "summarize")]),
-    "/People":                (0.06, 0.8, [W, ("forms", "side_panel", "generate_form_questions"), ("docs", "help_me_refine", "proofread")]),
+    "/People":                (0.06, 0.8, [W, ("docs", "help_me_refine", "proofread"), ("calendar", "help_me_schedule", "suggest_time")]),
     "/Operations":            (0.08, 0.5, [("calendar", "help_me_schedule", "suggest_time"), ("sheets", "ai_function", "generate_ai_function_response"),
                                            ("workflows", "workflows_creation", "")]),
-    "/Customer Success":      (0.09, 1.0, [W, ("gmail", "side_panel", "summarize"), ("chat", "side_panel", "summarize"),
+    "/Customer Success":      (0.09, 1.0, [W, ("gmail", "side_panel", "summarize"), ("drive", "side_panel", "summarize_file"),
                                            ("gemini_app", "chat_with_gemini", "search_web")]),
 }
-COMMON = [("gmail", "help_me_write", "generate_text"), ("gmail", "side_panel", "summarize"), ("docs", "side_panel", "summarize_file"),
-          ("gemini_app", "chat_with_gemini", "conversation"), ("docs", "help_me_refine", "proofread"),
-          ("meet", "take_notes_for_me", "classic_use_case_meet_take_notes_for_me_session")]
+COMMON = [W, ("gmail", "side_panel", "summarize"), ("docs", "side_panel", "summarize_file"),
+          ("gemini_app", "chat_with_gemini", "conversation"), ("docs", "help_me_refine", "proofread"), NOTES]
+assert all(c[0] in TESTED_APPS for v in OUS.values() for c in v[2]) and all(c[0] in TESTED_APPS for c in COMMON)
 
 
 def build(n_users: int, days: int, seed: int, tz_name: str = "Asia/Singapore"):
@@ -81,7 +87,7 @@ def build(n_users: int, days: int, seed: int, tz_name: str = "Asia/Singapore"):
     users, activities = [], []
     for f, l in names:
         ou = rng.choices(ou_names, weights)[0]
-        email = f"{f}.{l}@northwind-demo.example".lower()
+        email = f"{f}.{l}@lumenfield-demo.example".lower()
         users.append({"primaryEmail": email, "name": {"fullName": f"{f} {l}"}, "orgUnitPath": ou,
                       "suspended": rng.random() < 0.015})
         _, propensity, combos = OUS[ou]
@@ -134,7 +140,7 @@ def main(argv=None) -> int:
     ap.add_argument("--days", type=int, default=120)
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--timezone", default="Asia/Singapore")
-    ap.add_argument("--company", default="Northwind (demo)")
+    ap.add_argument("--company", default="Lumenfield Group (demo)")
     ap.add_argument("--out", default=str(BASE / "demo_site"))
     a = ap.parse_args(argv)
 

@@ -13,6 +13,4 @@ __pycache__/
 venv/
 .pytest_cache/
 
-# Generated demo site (fictional data; rebuild with tools/make_demo_dashboard.py)
-gemini-usage-pov/demo_site/
 .vercel/
