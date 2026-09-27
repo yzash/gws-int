@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }}</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f6f6f4; --surface: #fcfcfb; --surface-2: #f1f0ec; --border: #e3e2de;
+  --text: #0b0b0b; --text-2: #52514e; --muted: #7a7974;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --track: #efeeea; --zero: #b9b8b2;
+  --good: #1a7f37; --bad: #c62828; --grid: #e9e8e4;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #111110; --surface: #1a1a19; --surface-2: #222220; --border: #2e2e2c;
+    --text: #ffffff; --text-2: #c3c2b7; --muted: #8f8e87;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --track: #252524; --zero: #5d5c57;
+    --good: #57c26f; --bad: #ef6b6b; --grid: #2a2a28;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111110; --surface: #1a1a19; --surface-2: #222220; --border: #2e2e2c;
+  --text: #ffffff; --text-2: #c3c2b7; --muted: #8f8e87;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --track: #252524; --zero: #5d5c57;
+  --good: #57c26f; --bad: #ef6b6b; --grid: #2a2a28;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+       font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+main { max-width: 1280px; margin: 0 auto; padding: 20px 16px 60px; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; }
+header h1 { font-size: 22px; margin: 0; }
+header .meta { color: var(--muted); font-size: 12px; }
+.bar { position: sticky; top: 0; z-index: 20; background: var(--bg); padding: 10px 0; border-bottom: 1px solid var(--border);
+       display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+.bar label { font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 6px; }
+select, input[type=date], input[type=search], button {
+  font: inherit; font-size: 13px; color: var(--text); background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 5px 8px; }
+button { cursor: pointer; }
+button:hover, select:hover { border-color: var(--muted); }
+button.primary { background: var(--s1); color: #fff; border-color: var(--s1); }
+.dd { position: relative; }
+.dd > button::after { content: " ▾"; color: var(--muted); }
+.dd .menu { display: none; position: absolute; top: 110%; left: 0; z-index: 30; min-width: 220px; max-height: 320px; overflow: auto;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 6px; box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+.dd.open .menu { display: block; }
+.dd .menu label { display: flex; gap: 8px; padding: 4px 6px; border-radius: 6px; color: var(--text); font-size: 13px; cursor: pointer; }
+.dd .menu label:hover { background: var(--surface-2); }
+.dd .menu .acts { display: flex; gap: 6px; padding: 4px 6px 8px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+.dd .menu .acts button { font-size: 12px; padding: 2px 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; }
+.chip { font-size: 12px; border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 2px 10px; color: var(--text-2); }
+.chip b { color: var(--text); font-weight: 600; }
+.chip button { border: 0; background: none; padding: 0 0 0 6px; color: var(--muted); }
+nav.tabs { display: flex; gap: 4px; margin: 16px 0 12px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+nav.tabs button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: none; padding: 8px 12px; color: var(--text-2); white-space: nowrap; }
+nav.tabs button.on { color: var(--text); border-bottom-color: var(--s1); font-weight: 600; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.tile .l { color: var(--text-2); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.tile .v { font-size: 26px; font-weight: 650; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.tile .s { color: var(--muted); font-size: 12px; }
+.delta.up { color: var(--good); } .delta.down { color: var(--bad); } .delta { font-size: 12px; font-weight: 500; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 12px; margin-bottom: 12px; }
+.grid.three { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; min-width: 0; margin-bottom: 12px; }
+.grid .card { margin-bottom: 0; }
+.card h2 { font-size: 14px; margin: 0 0 4px; }
+.card .sub { color: var(--muted); font-size: 12px; margin: 0 0 10px; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--text-2); margin-bottom: 6px; }
+.legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+svg.chart { width: 100%; height: 230px; display: block; overflow: visible; }
+svg.chart text { fill: var(--muted); font-size: 11px; }
+svg.chart .gl { stroke: var(--grid); stroke-width: 1; }
+svg.chart .ln { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+svg.chart .xh { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+svg.chart .dot { stroke: var(--surface); stroke-width: 2; }
+.hb { display: grid; grid-template-columns: minmax(90px, 36%) minmax(40px, 1fr) 64px; gap: 10px; align-items: center; padding: 3px 0; }
+.hb .n { color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hb .t { height: 14px; background: var(--track); border-radius: 0 4px 4px 0; }
+.hb .f { height: 100%; background: var(--s1); border-radius: 0 4px 4px 0; min-width: 2px; }
+.hb .f.z { background: var(--zero); }
+.hb .v { text-align: right; font-variant-numeric: tabular-nums; }
+.hb.click { cursor: pointer; } .hb.click:hover .n { color: var(--text); text-decoration: underline; }
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+th { color: var(--text-2); font-weight: 600; font-size: 12px; white-space: nowrap; }
+th.sort { cursor: pointer; user-select: none; } th.sort:hover { color: var(--text); }
+th.sort.asc::after { content: " ▲"; } th.sort.desc::after { content: " ▼"; }
+td.n, th.n { text-align: right; }
+td.dim { color: var(--muted); }
+tr.click { cursor: pointer; } tr.click:hover td { background: var(--surface-2); }
+.hm td.c { padding: 0; width: 26px; height: 22px; border: 2px solid var(--surface); border-radius: 4px; background: var(--track); position: relative; }
+.hm td.c span { position: absolute; inset: 0; background: var(--s1); border-radius: 3px; }
+.hm th { font-weight: 400; font-size: 11px; color: var(--muted); text-align: center; border: 0; padding: 2px; }
+.hm th.r { text-align: right; padding-right: 8px; white-space: nowrap; }
+.mx td.c { min-width: 46px; text-align: right; font-size: 12px; position: relative; }
+.mx td.c span.bg { position: absolute; inset: 2px; background: var(--s1); border-radius: 3px; }
+.mx td.c b { position: relative; font-weight: 500; }
+.pill { display: inline-block; font-size: 11px; border-radius: 999px; padding: 1px 8px; border: 1px solid var(--border); color: var(--text-2); }
+.pill.High { border-color: var(--s1); color: var(--s1); } .pill.Zero { color: var(--muted); }
+.pill.flag { border-color: var(--bad); color: var(--bad); }
+.spark { width: 110px; height: 24px; display: block; }
+.spark polyline { fill: none; stroke: var(--s1); stroke-width: 1.8; }
+.pager { display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 8px; font-size: 12px; color: var(--muted); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+.row .grow { flex: 1; }
+#tip { position: fixed; pointer-events: none; z-index: 50; background: var(--surface); color: var(--text); border: 1px solid var(--border);
+       border-radius: 8px; padding: 6px 10px; font-size: 12px; box-shadow: 0 6px 18px rgba(0,0,0,.14); display: none; max-width: 280px; }
+#tip .k { color: var(--text-2); }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(760px, 100%); background: var(--bg); border-left: 1px solid var(--border);
+          z-index: 40; overflow-y: auto; padding: 18px 18px 40px; transform: translateX(100%); transition: transform .18s ease; }
+.drawer.open { transform: none; box-shadow: -12px 0 32px rgba(0,0,0,.18); }
+.drawer .top { display: flex; justify-content: space-between; align-items: start; gap: 10px; margin-bottom: 12px; }
+.drawer .top h2 { margin: 0; font-size: 18px; overflow-wrap: anywhere; }
+.cal { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 12px); gap: 3px; overflow-x: auto; padding-bottom: 4px; }
+.cal i { width: 12px; height: 12px; border-radius: 2px; background: var(--track); position: relative; }
+.cal i span { position: absolute; inset: 0; border-radius: 2px; background: var(--s1); }
+.cal i.out { background: transparent; }
+.note { color: var(--muted); font-size: 12px; }
+.empty { color: var(--muted); padding: 20px 0; text-align: center; }
+footer { color: var(--muted); font-size: 12px; margin-top: 28px; }
+@media (max-width: 640px) { .grid { grid-template-columns: 1fr; } .tile .v { font-size: 22px; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>{{ title }}</h1>
+    <span class="meta" id="meta"></span>
+  </header>
+  <div class="bar" id="bar">
+    <label>Period <select id="preset">
+      <option value="7">Last 7 days</option><option value="14">Last 14 days</option><option value="28" selected>Last 28 days</option>
+      <option value="90">Last 90 days</option><option value="all">All data</option><option value="custom">Custom…</option></select></label>
+    <input type="date" id="from" aria-label="From"><input type="date" id="to" aria-label="To">
+    <label>Rolling <select id="roll"><option value="1">1 day</option><option value="7" selected>7 days</option>
+      <option value="14">14 days</option><option value="28">28 days</option></select></label>
+    <div class="dd" data-key="ou"><button type="button">Org unit</button><div class="menu"></div></div>
+    <div class="dd" data-key="app"><button type="button">App</button><div class="menu"></div></div>
+    <div class="dd" data-key="uc"><button type="button">Use case</button><div class="menu"></div></div>
+    <div class="dd" data-key="fam"><button type="button">Type</button><div class="menu"></div></div>
+    <label><input type="checkbox" id="cmp" checked> Compare to previous period</label>
+    <button type="button" id="reset">Reset</button>
+  </div>
+  <div class="chips" id="chips"></div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="overview" class="on">Overview</button><button data-tab="usecases">Use cases</button>
+    <button data-tab="teams">Teams</button><button data-tab="people">People</button><button data-tab="engagement">Engagement</button>
+  </nav>
+  <section id="view"></section>
+  <footer id="foot"></footer>
+</main>
+<aside class="drawer" id="drawer" aria-label="User profile"></aside>
+<div id="tip"></div>
+<script type="application/json" id="data">{{ data_json|safe }}</script>
+<script>
+{% raw %}
+(() => {
+"use strict";
+const D = JSON.parse(document.getElementById("data").textContent);
+const E = D.ev, U = D.users, DI = D.dict, M = D.meta;
+const NE = E.u.length, NU = U.e.length;
+const DAY = 864e5, WD = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const iso = d => new Date(d * DAY).toISOString().slice(0, 10);
+const fromIso = s => Math.floor(Date.parse(s + "T00:00:00Z") / DAY);
+const short = d => { const t = new Date(d * DAY); return t.toLocaleDateString(undefined, {month: "short", day: "numeric", timeZone: "UTC"}); };
+const wday = d => (d + 3) % 7;  // 0 = Monday
+const nf = new Intl.NumberFormat();
+const fmt = v => v == null || isNaN(v) ? "–" : (Math.abs(v) >= 100 || Number.isInteger(v) ? nf.format(Math.round(v)) : v.toFixed(1));
+const pct = (a, b) => b ? 100 * a / b : 0;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const median = a => { if (!a.length) return 0; const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m-1] + s[m]) / 2; };
+const DATA_MIN = M.start_day, DATA_MAX = M.end_day;
+
+// ------------------------------------------------------------------ state
+const FILTERS = {ou: DI.ou, app: DI.apps, uc: DI.uc, fam: DI.fam};
+const defaults = () => ({preset: "28", from: Math.max(DATA_MIN, DATA_MAX - 27), to: DATA_MAX, roll: 7, cmp: true,
+  ou: [], app: [], uc: [], fam: [], tab: "overview", sort: "actions", dir: -1, q: "", tier: "", page: 0, group: "ou", user: null});
+let S = defaults();
+try { const h = decodeURIComponent(location.hash.slice(1)); if (h) S = {...S, ...JSON.parse(h)}; } catch (e) {}
+const save = () => { try { history.replaceState(null, "", "#" + encodeURIComponent(JSON.stringify({...S, user: S.user}))); } catch (e) {} };
+
+// ------------------------------------------------------------------ filtering
+function userOk() {
+  const ouSet = S.ou.length ? new Set(S.ou) : null;
+  const ok = new Uint8Array(NU);
+  for (let i = 0; i < NU; i++) ok[i] = !ouSet || ouSet.has(U.ou[i]) ? 1 : 0;
+  return ok;
+}
+function evMask(uok) {  // dimension filters only (dates handled by callers)
+  const A = S.app.length ? new Set(S.app) : null, C = S.uc.length ? new Set(S.uc) : null, F = S.fam.length ? new Set(S.fam) : null;
+  const m = new Uint8Array(NE);
+  for (let i = 0; i < NE; i++) {
+    if (!uok[E.u[i]]) continue;
+    if (A && !A.has(E.a[i])) continue;
+    if (C && !C.has(E.c[i])) continue;
+    if (F && !F.has(DI.uc_fam[E.c[i]])) continue;
+    m[i] = 1;
+  }
+  return m;
+}
+function tierOf(actions, days) {
+  if (!actions) return "Zero";
+  const x = actions * 28 / Math.max(days, 1);
+  return x < 5 ? "Low" : x < 20 ? "Medium" : "High";
+}
+// Per-period aggregate over masked events.
+function agg(mask, from, to, uok) {
+  const days = to - from + 1;
+  const per = new Map();  // user -> {n, days:Set, first, last, apps:Map, uc:Set}
+  let n = 0;
+  const dau = new Array(days).fill(0).map(() => new Set()), actions = new Array(days).fill(0);
+  for (let i = 0; i < NE; i++) {
+    if (!mask[i]) continue;
+    const d = E.d[i]; if (d < from || d > to) continue;
+    n++;
+    const u = E.u[i];
+    let p = per.get(u); if (!p) { p = {n: 0, days: new Set(), first: d, last: d, uc: new Set(), app: new Map()}; per.set(u, p); }
+    p.n++; p.days.add(d); if (d < p.first) p.first = d; if (d > p.last) p.last = d; p.uc.add(E.c[i]);
+    p.app.set(E.a[i], (p.app.get(E.a[i]) || 0) + 1);
+    dau[d - from].add(u); actions[d - from]++;
+  }
+  let pop = 0; for (let i = 0; i < NU; i++) pop += uok[i];
+  return {from, to, days, n, per, pop, active: per.size, dau: dau.map(s => s.size), actions};
+}
+// Distinct users in trailing window ending each day.
+function rolling(mask, from, to, win) {
+  const lo = from - win + 1, byDay = new Map();
+  for (let i = 0; i < NE; i++) {
+    if (!mask[i]) continue; const d = E.d[i]; if (d < lo || d > to) continue;
+    let s = byDay.get(d); if (!s) byDay.set(d, s = new Set()); s.add(E.u[i]);
+  }
+  const cnt = new Map(), out = [];
+  const add = (d, k) => { const s = byDay.get(d); if (!s) return; for (const u of s) { const c = (cnt.get(u) || 0) + k; c ? cnt.set(u, c) : cnt.delete(u); } };
+  for (let d = lo; d < from; d++) add(d, 1);
+  for (let d = from; d <= to; d++) { add(d, 1); if (d - win >= lo) add(d - win, -1); out.push(cnt.size); }
+  return out;
+}
+function firstUse(mask) {  // earliest event per user across all data (respecting dimension filters)
+  const f = new Map();
+  for (let i = 0; i < NE; i++) if (mask[i]) { const u = E.u[i], d = E.d[i]; if (!f.has(u) || d < f.get(u)) f.set(u, d); }
+  return f;
+}
+function kpis(a, mask, rollArr) {
+  const fu = firstUse(mask);
+  let nw = 0; for (const [u] of a.per) if (fu.get(u) >= a.from) nw++;
+  const days = [...a.per.values()].map(p => p.days.size);
+  const r28 = rolling(mask, a.from, a.to, 28);
+  let st = 0, sc = 0; a.dau.forEach((v, i) => { if (r28[i]) { st += v / r28[i]; sc++; } });
+  const breadth = [...a.per.values()].map(p => p.uc.size);
+  return {active: a.active, pop: a.pop, adoption: pct(a.active, a.pop), actions: a.n, apu: a.active ? a.n / a.active : 0,
+    mdays: median(days), stick: sc ? 100 * st / sc : 0, nw, ret: a.active - nw, breadth: breadth.length ? breadth.reduce((x, y) => x + y, 0) / breadth.length : 0,
+    avgDau: a.dau.reduce((x, y) => x + y, 0) / a.days};
+}
+
+// ------------------------------------------------------------------ charts
+const tip = $("#tip");
+function showTip(ev, html) { tip.innerHTML = html; tip.style.display = "block";
+  const x = Math.min(ev.clientX + 14, innerWidth - tip.offsetWidth - 8), y = Math.min(ev.clientY + 14, innerHeight - tip.offsetHeight - 8);
+  tip.style.left = x + "px"; tip.style.top = y + "px"; }
+const hideTip = () => { tip.style.display = "none"; };
+
+function lineChart(el, xs, series, opts = {}) {
+  const W = Math.max(el.clientWidth, 280), H = 230, P = {l: 44, r: 12, t: 10, b: 26};
+  const iw = W - P.l - P.r, ih = H - P.t - P.b;
+  const max = Math.max(1, ...series.flatMap(s => s.values));
+  const nice = (() => { const e = Math.pow(10, Math.floor(Math.log10(max))), m = max / e; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * e; })();
+  const X = i => P.l + (xs.length < 2 ? iw / 2 : i * iw / (xs.length - 1)), Y = v => P.t + ih - v / nice * ih;
+  let g = "";
+  for (let k = 0; k <= 4; k++) { const v = nice * k / 4, y = Y(v); g += `<line class="gl" x1="${P.l}" x2="${W - P.r}" y1="${y}" y2="${y}"/><text x="${P.l - 6}" y="${y + 4}" text-anchor="end">${fmt(v)}</text>`; }
+  const step = Math.max(1, Math.ceil(xs.length / Math.max(2, Math.floor(iw / 70))));
+  xs.forEach((d, i) => { if (i % step === 0 || i === xs.length - 1) g += `<text x="${X(i)}" y="${H - 6}" text-anchor="middle">${opts.xfmt ? opts.xfmt(d) : short(d)}</text>`; });
+  series.forEach(s => { g += `<polyline class="ln" style="stroke:${s.color};stroke-width:${s.w || 2}" points="${s.values.map((v, i) => X(i).toFixed(1) + "," + Y(v).toFixed(1)).join(" ")}"/>`; });
+  el.innerHTML = `<div class="legend">${series.map(s => `<span><i style="background:${s.color}"></i>${esc(s.name)}</span>`).join("")}</div>
+    <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opts.label || "trend")}">${g}<g class="hover"></g><rect x="${P.l}" y="${P.t}" width="${iw}" height="${ih}" fill="transparent"/></svg>`;
+  const svg = el.querySelector("svg"), hov = svg.querySelector(".hover");
+  svg.querySelector("rect").addEventListener("mousemove", ev => {
+    const r = svg.getBoundingClientRect(), x = (ev.clientX - r.left) * W / r.width;
+    const i = Math.max(0, Math.min(xs.length - 1, Math.round((x - P.l) / (iw / Math.max(1, xs.length - 1)))));
+    hov.innerHTML = `<line class="xh" x1="${X(i)}" x2="${X(i)}" y1="${P.t}" y2="${P.t + ih}"/>` +
+      series.map(s => `<circle class="dot" cx="${X(i)}" cy="${Y(s.values[i])}" r="4.5" fill="${s.color}"/>`).join("");
+    showTip(ev, `<b>${opts.xfmt ? opts.xfmt(xs[i]) : iso(xs[i])}</b><br>` + series.map(s => `<span class="k">${esc(s.name)}:</span> ${fmt(s.values[i])}`).join("<br>"));
+  });
+  svg.querySelector("rect").addEventListener("mouseleave", () => { hov.innerHTML = ""; hideTip(); });
+}
+function hbars(el, items, opts = {}) {
+  if (!items.length) { el.innerHTML = `<div class="empty">No data for this selection.</div>`; return; }
+  const max = Math.max(1, ...items.map(i => i.v));
+  el.innerHTML = items.map((it, k) => `<div class="hb${opts.onClick ? " click" : ""}" data-k="${k}" data-tip="${esc(it.tip || (it.label + ": " + fmt(it.v)))}">
+    <span class="n">${esc(it.label)}</span><div class="t"><div class="f${it.zero ? " z" : ""}" style="width:${(100 * it.v / max).toFixed(1)}%"></div></div>
+    <span class="v">${opts.pct ? it.v.toFixed(1) + "%" : fmt(it.v)}</span></div>`).join("");
+  el.querySelectorAll(".hb").forEach(r => {
+    r.addEventListener("mousemove", ev => showTip(ev, esc(r.dataset.tip)));
+    r.addEventListener("mouseleave", hideTip);
+    if (opts.onClick) r.addEventListener("click", () => opts.onClick(items[+r.dataset.k]));
+  });
+}
+function spark(vals) {
+  if (!vals.length) return "";
+  const w = 110, h = 24, mx = Math.max(1, ...vals), st = vals.length > 1 ? w / (vals.length - 1) : 0;
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${vals.map((v, i) => (i * st).toFixed(1) + "," + (h - 2 - v / mx * (h - 4)).toFixed(1)).join(" ")}"/></svg>`;
+}
+function bindTips(root) {
+  root.querySelectorAll("[data-tip]").forEach(n => { if (n.classList.contains("hb")) return;
+    n.addEventListener("mousemove", ev => showTip(ev, n.dataset.tip)); n.addEventListener("mouseleave", hideTip); });
+}
+function download(name, rows) {
+  const q = v => { const s = String(v ?? ""); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const blob = new Blob([rows.map(r => r.map(q).join(",")).join("\n")], {type: "text/csv"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+function delta(cur, prev, unit = "") {
+  if (!S.cmp || prev == null || isNaN(prev)) return "";
+  const d = cur - prev; if (Math.abs(d) < 1e-9) return `<span class="delta">no change</span>`;
+  const rel = prev ? ` (${d > 0 ? "+" : ""}${(100 * d / prev).toFixed(0)}%)` : "";
+  return `<span class="delta ${d > 0 ? "up" : "down"}">${d > 0 ? "▲" : "▼"} ${fmt(Math.abs(d))}${unit}${unit ? "" : rel}</span>`;
+}
+const tile = (l, v, s = "") => `<div class="tile"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
+
+// ------------------------------------------------------------------ views
+function ctx() {
+  const uok = userOk(), mask = evMask(uok);
+  const a = agg(mask, S.from, S.to, uok);
+  const len = S.to - S.from + 1, pf = S.from - len, pt = S.from - 1;
+  const prev = pf >= DATA_MIN ? agg(mask, pf, pt, uok) : null;  // only when the whole previous period has data
+  return {uok, mask, a, prev, len};
+}
+
+function overview(c) {
+  const {a, mask, prev} = c;
+  const k = kpis(a, mask), pk = prev ? kpis(prev, mask) : null;
+  const xs = []; for (let d = S.from; d <= S.to; d++) xs.push(d);
+  const roll = rolling(mask, S.from, S.to, S.roll);
+  const rollAct = (() => { const out = []; for (let i = 0; i < a.actions.length; i++) { let s = 0, n = 0; for (let j = Math.max(0, i - S.roll + 1); j <= i; j++) { s += a.actions[j]; n++; } out.push(s / n); } return out; })();
+  const tiers = {Zero: 0, Low: 0, Medium: 0, High: 0};
+  for (let u = 0; u < NU; u++) if (c.uok[u]) { const p = a.per.get(u); tiers[tierOf(p ? p.n : 0, a.days)]++; }
+  const appN = new Map(), appU = new Map(), ucN = new Map(), ucU = new Map();
+  for (let i = 0; i < NE; i++) { if (!mask[i] || E.d[i] < S.from || E.d[i] > S.to) continue;
+    appN.set(E.a[i], (appN.get(E.a[i]) || 0) + 1); (appU.get(E.a[i]) || appU.set(E.a[i], new Set()).get(E.a[i])).add(E.u[i]);
+    ucN.set(E.c[i], (ucN.get(E.c[i]) || 0) + 1); (ucU.get(E.c[i]) || ucU.set(E.c[i], new Set()).get(E.c[i])).add(E.u[i]); }
+  const v = $("#view");
+  v.innerHTML = `<div class="tiles">
+    ${tile("Active users", fmt(k.active), `${delta(k.active, pk && pk.active)} of ${fmt(k.pop)} in scope`)}
+    ${tile("Adoption", k.adoption.toFixed(1) + "%", delta(k.adoption, pk && pk.adoption, " pts") + (k.adoption < M.target ? ` · <span class="pill flag">below ${M.target}% target</span>` : ""))}
+    ${tile("Gemini actions", fmt(k.actions), delta(k.actions, pk && pk.actions))}
+    ${tile("Actions per active user", fmt(k.apu), delta(k.apu, pk && pk.apu))}
+    ${tile("Median active days", fmt(k.mdays), `per active user · ${delta(k.mdays, pk && pk.mdays)}`)}
+    ${tile("Stickiness (DAU/MAU)", k.stick.toFixed(0) + "%", `avg daily ÷ 28-day actives · ${delta(k.stick, pk && pk.stick, " pts")}`)}
+    ${tile("New users", fmt(k.nw), `first Gemini use in period · ${delta(k.nw, pk && pk.nw)}`)}
+    ${tile("Use cases per user", k.breadth.toFixed(1), `avg buckets per active user · ${delta(k.breadth, pk && pk.breadth)}`)}
+  </div>
+  <div class="grid">
+    <div class="card"><h2>Active users</h2><p class="sub">Daily active users and distinct users over a rolling ${S.roll}-day window</p><div id="c1"></div></div>
+    <div class="card"><h2>Gemini actions</h2><p class="sub">Actions per day and ${S.roll}-day rolling average</p><div id="c2"></div></div>
+  </div>
+  <div class="grid three">
+    <div class="card"><h2>Users by usage tier</h2><p class="sub">Zero · Low (&lt;5) · Medium (5–19) · High (20+) actions per 28 days, scaled to the period</p><div id="c3"></div></div>
+    <div class="card"><h2>Active users by app</h2><p class="sub">Click an app to filter</p><div id="c4"></div></div>
+    <div class="card"><h2>Top use cases</h2><p class="sub">Active users per use case · click to filter</p><div id="c5"></div></div>
+  </div>`;
+  lineChart($("#c1"), xs, [{name: "Daily active users", values: a.dau, color: css("--s1"), w: 1.5},
+    {name: `Rolling ${S.roll}-day active users`, values: roll, color: css("--s2"), w: 2.5}], {label: "Active users"});
+  lineChart($("#c2"), xs, [{name: "Actions per day", values: a.actions, color: css("--s1"), w: 1.5},
+    {name: `${S.roll}-day average`, values: rollAct, color: css("--s2"), w: 2.5}], {label: "Actions"});
+  hbars($("#c3"), Object.entries(tiers).map(([t, n]) => ({label: t, v: n, zero: t === "Zero", tip: `${t}: ${n} users`})),
+    {onClick: it => { S.tab = "people"; S.tier = it.label; S.page = 0; render(); }});
+  hbars($("#c4"), [...appU.entries()].map(([i, s]) => ({label: DI.apps[i], v: s.size, i, tip: `${DI.apps[i]}: ${s.size} users · ${fmt(appN.get(i))} actions`})).sort((x, y) => y.v - x.v),
+    {onClick: it => { S.app = [it.i]; render(); }});
+  hbars($("#c5"), [...ucU.entries()].map(([i, s]) => ({label: DI.uc[i], v: s.size, i, tip: `${DI.uc[i]}: ${s.size} users · ${fmt(ucN.get(i))} actions`})).sort((x, y) => y.v - x.v).slice(0, 8),
+    {onClick: it => { S.uc = [it.i]; render(); }});
+}
+
+function usecases(c) {
+  const {a, mask} = c;
+  const nA = DI.apps.length, nC = DI.uc.length;
+  const mx = Array.from({length: nC}, () => new Array(nA).fill(0));
+  const ucU = Array.from({length: nC}, () => new Set()), famN = new Array(DI.fam.length).fill(0);
+  const combo = new Map();
+  const weeks = []; for (let d = S.from; d <= S.to; d += 7) weeks.push(d);
+  const wk = Array.from({length: nC}, () => new Array(weeks.length).fill(0));
+  let total = 0;
+  for (let i = 0; i < NE; i++) { if (!mask[i]) continue; const d = E.d[i]; if (d < S.from || d > S.to) continue;
+    total++; mx[E.c[i]][E.a[i]]++; ucU[E.c[i]].add(E.u[i]); famN[DI.uc_fam[E.c[i]]]++;
+    wk[E.c[i]][Math.floor((d - S.from) / 7)]++;
+    const key = E.a[i] + "|" + E.f[i] + "|" + E.x[i] + "|" + E.c[i]; let o = combo.get(key); if (!o) combo.set(key, o = {n: 0, u: new Set()}); o.n++; o.u.add(E.u[i]); }
+  const rowsUc = DI.uc.map((name, i) => ({i, name, n: mx[i].reduce((x, y) => x + y, 0), u: ucU[i].size})).filter(r => r.n);
+  const peak = Math.max(1, ...mx.flat());
+  const appsUsed = DI.apps.map((_, j) => j).filter(j => mx.some(r => r[j]));
+  const v = $("#view");
+  v.innerHTML = `<div class="grid">
+    <div class="card"><h2>Use-case reach</h2><p class="sub">% of active users who used each use case · click to filter</p><div id="u1"></div></div>
+    <div class="card"><h2>Share of actions by type</h2><p class="sub">create · assess · differentiate · summarise · communicate · converse · automate</p><div id="u2"></div></div>
+  </div>
+  <div class="card"><h2>Use case × app</h2><p class="sub">Gemini actions · darker = more</p><div class="scroll"><table class="mx"><tr><th>Use case</th>
+    ${appsUsed.map(j => `<th class="n">${esc(DI.apps[j])}</th>`).join("")}<th class="n">Total</th><th class="n">Users</th></tr>
+    ${rowsUc.sort((x, y) => y.n - x.n).map(r => `<tr><td>${esc(r.name)}</td>${appsUsed.map(j => { const n = mx[r.i][j];
+      const op = 0.1 + 0.75 * n / peak;
+      return `<td class="c" data-tip="${esc(r.name)} · ${esc(DI.apps[j])}: ${fmt(n)} actions">${n ? `<span class="bg" style="opacity:${op.toFixed(2)}"></span>` : ""}<b${op > 0.5 ? ' style="color:#fff"' : ""}>${n ? fmt(n) : ""}</b></td>`; }).join("")}
+      <td class="n"><b>${fmt(r.n)}</b></td><td class="n">${r.u}</td></tr>`).join("") || `<tr><td class="empty">No data</td></tr>`}
+  </table></div></div>
+  <div class="card"><h2>Weekly trend by use case</h2><p class="sub">Actions per week (week starting)</p><div class="scroll"><table>
+    <tr><th>Use case</th><th>Trend</th>${weeks.map(w => `<th class="n">${short(w)}</th>`).join("")}</tr>
+    ${rowsUc.map(r => `<tr><td>${esc(r.name)}</td><td>${spark(wk[r.i])}</td>${wk[r.i].map(n => `<td class="n">${n ? fmt(n) : ""}</td>`).join("")}</tr>`).join("")}
+  </table></div></div>
+  <div class="card"><div class="row"><h2 class="grow">Features and actions</h2><button type="button" id="dlc">Download CSV</button></div>
+    <div class="scroll"><table><tr><th>App</th><th>Feature</th><th>Action</th><th>Use case</th><th class="n">Actions</th><th class="n">Users</th></tr>
+    ${[...combo.entries()].sort((x, y) => y[1].n - x[1].n).slice(0, 40).map(([k, o]) => { const [ap, f, x, cc] = k.split("|").map(Number);
+      return `<tr><td>${esc(DI.apps[ap])}</td><td>${esc(DI.feat[f])}</td><td>${esc(DI.act[x])}</td><td class="dim">${esc(DI.uc[cc])}</td><td class="n">${fmt(o.n)}</td><td class="n">${o.u.size}</td></tr>`; }).join("")}
+    </table></div><p class="note">Top 40 shown; the CSV has every combination.</p></div>`;
+  hbars($("#u1"), rowsUc.map(r => ({label: r.name, v: pct(r.u, a.active), i: r.i, tip: `${r.name}: ${r.u} of ${a.active} active users · ${fmt(r.n)} actions`})).sort((x, y) => y.v - x.v),
+    {pct: true, onClick: it => { S.uc = [it.i]; S.tab = "overview"; render(); }});
+  hbars($("#u2"), DI.fam.map((f, i) => ({label: f, v: pct(famN[i], total), i, tip: `${f}: ${fmt(famN[i])} actions`})).filter(x => x.v > 0).sort((x, y) => y.v - x.v),
+    {pct: true, onClick: it => { S.fam = [it.i]; render(); }});
+  bindTips(v);
+  $("#dlc").onclick = () => download("gemini_features_actions.csv", [["app", "feature", "action", "use_case", "actions", "users"],
+    ...[...combo.entries()].map(([k, o]) => { const [ap, f, x, cc] = k.split("|").map(Number); return [DI.apps[ap], DI.feat[f], DI.act[x], DI.uc[cc], o.n, o.u.size]; })]);
+}
+
+function groupKey(u) {
+  const p = DI.ou[U.ou[u]];
+  if (S.group === "ou") return p;
+  const n = +S.group.slice(-1), parts = p.split("/").filter(Boolean);
+  return "/" + parts.slice(0, n).join("/");
+}
+function teams(c) {
+  const {a, uok, mask} = c;
+  const g = new Map();
+  for (let u = 0; u < NU; u++) { if (!uok[u]) continue; const k = groupKey(u); let o = g.get(k); if (!o) g.set(k, o = {k, users: 0, active: 0, n: 0, days: [], tiers: {Zero: 0, Low: 0, Medium: 0, High: 0}, uc: new Map(), members: []});
+    o.users++; o.members.push(u); const p = a.per.get(u); o.tiers[tierOf(p ? p.n : 0, a.days)]++;
+    if (p) { o.active++; o.n += p.n; o.days.push(p.days.size); } }
+  const weeks = []; for (let d = S.from; d <= S.to; d += 7) weeks.push(d);
+  const gw = new Map();
+  for (let i = 0; i < NE; i++) { if (!mask[i]) continue; const d = E.d[i]; if (d < S.from || d > S.to) continue;
+    const k = groupKey(E.u[i]); const o = g.get(k); if (!o) continue; o.uc.set(E.c[i], (o.uc.get(E.c[i]) || 0) + 1);
+    let w = gw.get(k); if (!w) gw.set(k, w = new Array(weeks.length).fill(0)); w[Math.floor((d - S.from) / 7)]++; }
+  const rows = [...g.values()].map(o => ({...o, ad: pct(o.active, o.users), apu: o.active ? o.n / o.active : 0, md: median(o.days),
+    top: [...o.uc.entries()].sort((x, y) => y[1] - x[1])[0], small: o.users < M.min_group})).sort((x, y) => y.users - x.users);
+  const v = $("#view");
+  v.innerHTML = `<div class="card"><div class="row"><h2 class="grow">Adoption by team</h2>
+    <label>Group by <select id="grp"><option value="ou">Full OU path</option><option value="lvl1">OU level 1</option><option value="lvl2">OU level 2</option><option value="lvl3">OU level 3</option></select></label>
+    <button type="button" id="dlt">Download CSV</button></div>
+    <p class="sub">Groups under ${M.min_group} people are hidden · target reach ${M.target}% · click a group to filter to it</p>
+    <div class="scroll"><table><tr><th>Group</th><th class="n">Users</th><th class="n">Active</th><th class="n">Adoption</th><th class="n">Actions / active user</th>
+      <th class="n">Median days</th><th class="n">High</th><th class="n">Zero</th><th>Top use case</th><th>Weekly actions</th><th></th></tr>
+    ${rows.map(r => r.small ? `<tr><td>${esc(r.k)}</td><td class="n">${r.users}</td><td colspan="9" class="dim">hidden (fewer than ${M.min_group} people)</td></tr>` :
+      `<tr class="click" data-g="${esc(r.k)}"><td>${esc(r.k)}</td><td class="n">${r.users}</td><td class="n">${r.active}</td><td class="n">${r.ad.toFixed(1)}%</td>
+      <td class="n">${fmt(r.apu)}</td><td class="n">${fmt(r.md)}</td><td class="n">${r.tiers.High}</td><td class="n">${r.tiers.Zero}</td>
+      <td class="dim">${r.top ? esc(DI.uc[r.top[0]]) : "–"}</td><td>${spark(gw.get(r.k) || [])}</td>
+      <td>${r.ad < M.target ? `<span class="pill flag">below target</span>` : `<span class="pill">on target</span>`}</td></tr>`).join("")}
+    </table></div></div>
+  <div class="card"><h2>Adoption by team</h2><p class="sub">% of people with at least one Gemini action</p><div id="t1"></div></div>`;
+  $("#grp").value = S.group; $("#grp").onchange = e => { S.group = e.target.value; render(); };
+  v.querySelectorAll("tr[data-g]").forEach(tr => tr.onclick = () => {
+    const key = tr.dataset.g; S.ou = DI.ou.map((p, i) => i).filter(i => { const parts = DI.ou[i]; return S.group === "ou" ? parts === key : ("/" + parts.split("/").filter(Boolean).slice(0, +S.group.slice(-1)).join("/")) === key; });
+    S.tab = "overview"; render(); });
+  hbars($("#t1"), rows.filter(r => !r.small).map(r => ({label: r.k, v: r.ad, tip: `${r.k}: ${r.active}/${r.users} active`})).sort((x, y) => y.v - x.v), {pct: true});
+  $("#dlt").onclick = () => download("gemini_by_team.csv", [["group", "users", "active", "adoption_pct", "actions_per_active_user", "median_active_days", "high", "medium", "low", "zero", "top_use_case"],
+    ...rows.map(r => r.small ? [r.k, r.users, "hidden", "", "", "", "", "", "", "", ""] : [r.k, r.users, r.active, r.ad.toFixed(1), r.apu.toFixed(1), r.md, r.tiers.High, r.tiers.Medium, r.tiers.Low, r.tiers.Zero, r.top ? DI.uc[r.top[0]] : ""])]);
+}
+
+function peopleRows(c) {
+  const {a, uok, mask} = c;
+  const weeks = []; for (let d = S.from; d <= S.to; d += 7) weeks.push(d);
+  const wk = new Map(), topU = new Map();
+  for (let i = 0; i < NE; i++) { if (!mask[i]) continue; const d = E.d[i]; if (d < S.from || d > S.to) continue;
+    const u = E.u[i]; let w = wk.get(u); if (!w) wk.set(u, w = new Array(weeks.length).fill(0)); w[Math.floor((d - S.from) / 7)]++;
+    let t = topU.get(u); if (!t) topU.set(u, t = new Map()); t.set(E.c[i], (t.get(E.c[i]) || 0) + 1); }
+  const lastEver = new Map(); for (let i = 0; i < NE; i++) if (mask[i] && E.d[i] <= S.to) { const u = E.u[i]; if (!lastEver.has(u) || E.d[i] > lastEver.get(u)) lastEver.set(u, E.d[i]); }
+  const rows = [];
+  for (let u = 0; u < NU; u++) { if (!uok[u]) continue; const p = a.per.get(u);
+    const top = p ? [...p.app.entries()].sort((x, y) => y[1] - x[1])[0] : null, tuc = topU.get(u) ? [...topU.get(u).entries()].sort((x, y) => y[1] - x[1])[0] : null;
+    const le = lastEver.get(u);
+    rows.push({u, email: U.e[u], name: U.n[u], ou: DI.ou[U.ou[u]], actions: p ? p.n : 0, days: p ? p.days.size : 0, breadth: p ? p.uc.size : 0,
+      apps: p ? p.app.size : 0, last: le ?? null, since: le != null ? S.to - le : null, first: p ? p.first : null,
+      tier: tierOf(p ? p.n : 0, a.days), topApp: top ? DI.apps[top[0]] : "", topUc: tuc ? DI.uc[tuc[0]] : "", wk: wk.get(u) || new Array(weeks.length).fill(0),
+      susp: U.s[u]}); }
+  return rows;
+}
+function people(c) {
+  let rows = peopleRows(c);
+  const q = S.q.trim().toLowerCase();
+  if (q) rows = rows.filter(r => r.email.toLowerCase().includes(q) || (r.name || "").toLowerCase().includes(q) || r.ou.toLowerCase().includes(q));
+  if (S.tier) rows = rows.filter(r => r.tier === S.tier);
+  const key = S.sort, dir = S.dir;
+  rows.sort((x, y) => { const a = x[key], b = y[key]; if (a == null && b == null) return 0; if (a == null) return 1; if (b == null) return -1;
+    return (typeof a === "string" ? a.localeCompare(b) : a - b) * dir || x.email.localeCompare(y.email); });
+  const per = 50, pages = Math.max(1, Math.ceil(rows.length / per)); S.page = Math.min(S.page, pages - 1);
+  const shown = rows.slice(S.page * per, S.page * per + per);
+  const cols = [["email", "User"], ["ou", "OU"], ["actions", "Actions", 1], ["days", "Active days", 1], ["breadth", "Use cases", 1], ["apps", "Apps", 1],
+    ["topUc", "Top use case"], ["last", "Last used"], ["since", "Days since", 1], ["tier", "Tier"]];
+  const v = $("#view");
+  v.innerHTML = `<div class="card"><div class="row">
+    <input type="search" id="q" placeholder="Search name, email or OU" value="${esc(S.q)}" class="grow" style="min-width:200px">
+    <label>Tier <select id="tier"><option value="">All</option>${["High", "Medium", "Low", "Zero"].map(t => `<option${S.tier === t ? " selected" : ""}>${t}</option>`).join("")}</select></label>
+    <button type="button" id="dlp">Download CSV</button></div>
+    <p class="sub">${fmt(rows.length)} people · click a column to sort · click a person for their full profile</p>
+    <div class="scroll"><table><tr>${cols.map(([k, l, n]) => `<th class="sort${n ? " n" : ""}${S.sort === k ? (S.dir > 0 ? " asc" : " desc") : ""}" data-k="${k}">${l}</th>`).join("")}<th>Weekly trend</th></tr>
+    ${shown.map(r => `<tr class="click" data-u="${r.u}"><td>${esc(r.email)}${r.name ? `<br><span class="dim">${esc(r.name)}</span>` : ""}${r.susp ? ` <span class="pill">suspended</span>` : ""}</td>
+      <td class="dim">${esc(r.ou)}</td><td class="n">${fmt(r.actions)}</td><td class="n">${r.days}</td><td class="n">${r.breadth}</td><td class="n">${r.apps}</td>
+      <td class="dim">${esc(r.topUc || "–")}</td><td>${r.last != null ? iso(r.last) : "never"}</td><td class="n">${r.since ?? "–"}</td>
+      <td><span class="pill ${r.tier}">${r.tier}</span></td><td>${spark(r.wk)}</td></tr>`).join("") || `<tr><td colspan="11" class="empty">Nobody matches.</td></tr>`}
+    </table></div>
+    <div class="pager"><button type="button" id="pp"${S.page ? "" : " disabled"}>‹ Prev</button> Page ${S.page + 1} of ${pages} <button type="button" id="pn"${S.page < pages - 1 ? "" : " disabled"}>Next ›</button></div></div>`;
+  const qi = $("#q"); qi.oninput = () => { S.q = qi.value; S.page = 0; clearTimeout(qi._t); qi._t = setTimeout(() => { render(); const n = $("#q"); n.focus(); n.setSelectionRange(n.value.length, n.value.length); }, 200); };
+  $("#tier").onchange = e => { S.tier = e.target.value; S.page = 0; render(); };
+  v.querySelectorAll("th.sort").forEach(th => th.onclick = () => { const k = th.dataset.k; S.dir = S.sort === k ? -S.dir : (["email", "ou", "topUc", "tier"].includes(k) ? 1 : -1); S.sort = k; render(); });
+  v.querySelectorAll("tr[data-u]").forEach(tr => tr.onclick = () => openUser(+tr.dataset.u));
+  $("#pp").onclick = () => { S.page--; render(); }; $("#pn").onclick = () => { S.page++; render(); };
+  $("#dlp").onclick = () => download("gemini_people.csv", [["email", "name", "ou", "actions", "active_days", "use_cases", "apps", "top_app", "top_use_case", "first_used", "last_used", "days_since_last", "tier", "suspended"],
+    ...rows.map(r => [r.email, r.name, r.ou, r.actions, r.days, r.breadth, r.apps, r.topApp, r.topUc, r.first != null ? iso(r.first) : "", r.last != null ? iso(r.last) : "", r.since ?? "", r.tier, r.susp])]);
+}
+
+function engagement(c) {
+  const {a, mask, uok} = c;
+  const hm = Array.from({length: 7}, () => new Array(24).fill(0));
+  let after = 0; const wh = M.work_hours || {start: 8, end: 18, days: [0, 1, 2, 3, 4]};
+  for (let i = 0; i < NE; i++) { if (!mask[i]) continue; const d = E.d[i]; if (d < S.from || d > S.to) continue;
+    const w = wday(d), h = E.h[i]; hm[w][h]++; if (!wh.days.includes(w) || h < wh.start || h >= wh.end) after++; }
+  const peak = Math.max(1, ...hm.flat());
+  const bins = [["1 day", 1, 1], ["2–3 days", 2, 3], ["4–7 days", 4, 7], ["8–14 days", 8, 14], ["15+ days", 15, 1e9]];
+  const freq = bins.map(([l, lo, hi]) => ({label: l, v: [...a.per.values()].filter(p => p.days.size >= lo && p.days.size <= hi).length}));
+  // Weekly cohorts by first use (within the data, respecting filters)
+  const fu = firstUse(mask);
+  const wkOf = d => Math.floor((d - DATA_MIN) / 7);
+  const act = new Map(); for (let i = 0; i < NE; i++) if (mask[i]) { const u = E.u[i]; let s = act.get(u); if (!s) act.set(u, s = new Set()); s.add(wkOf(E.d[i])); }
+  const cohorts = new Map(); for (const [u, d] of fu) { if (!uok[u]) continue; const w = wkOf(d); let o = cohorts.get(w); if (!o) cohorts.set(w, o = []); o.push(u); }
+  const lastW = wkOf(DATA_MAX), cw = [...cohorts.keys()].sort((x, y) => x - y);
+  const maxOff = Math.min(8, lastW - (cw[0] ?? lastW));
+  // Lapsed: active in the period's first part but not in its last 7 days
+  const lapsed = []; for (const [u, p] of a.per) if (p.last <= S.to - 7) lapsed.push({u, last: p.last, n: p.n});
+  lapsed.sort((x, y) => y.n - x.n);
+  const zeroByOu = new Map(); for (let u = 0; u < NU; u++) if (uok[u] && !a.per.has(u) && !U.s[u]) { const k = DI.ou[U.ou[u]]; (zeroByOu.get(k) || zeroByOu.set(k, []).get(k)).push(u); }
+  const v = $("#view");
+  v.innerHTML = `<div class="tiles">
+    ${tile("Outside working hours", pct(after, a.n).toFixed(0) + "%", `${wh.start}:00–${wh.end}:00 on workdays (${esc(M.tz)})`)}
+    ${tile("Lapsed users", fmt(lapsed.length), "used Gemini in the period but not in its last 7 days")}
+    ${tile("Never used", fmt([...zeroByOu.values()].reduce((x, y) => x + y.length, 0)), "active accounts with zero actions in the period")}
+    ${tile("Avg daily active users", fmt(kpis(a, mask).avgDau), "")}
+  </div>
+  <div class="grid">
+    <div class="card"><h2>When people use Gemini</h2><p class="sub">Actions by weekday and hour (${esc(M.tz)})</p><div class="scroll"><table class="hm">
+      <tr><th></th>${Array.from({length: 24}, (_, h) => `<th>${h % 3 ? "" : h}</th>`).join("")}</tr>
+      ${hm.map((r, w) => `<tr><th class="r">${WD[w]}</th>${r.map((n, h) => `<td class="c" data-tip="${WD[w]} ${h}:00 — ${fmt(n)} actions">${n ? `<span style="opacity:${(0.1 + 0.9 * n / peak).toFixed(2)}"></span>` : ""}</td>`).join("")}</tr>`).join("")}
+    </table></div></div>
+    <div class="card"><h2>How often people use it</h2><p class="sub">Active users by number of active days in the period</p><div id="e1"></div></div>
+  </div>
+  <div class="card"><h2>Weekly cohort retention</h2><p class="sub">People grouped by the week of their first Gemini use in this data; % still active N weeks later</p>
+    <div class="scroll"><table><tr><th>First-use week</th><th class="n">People</th>${Array.from({length: maxOff + 1}, (_, k) => `<th class="n">Week ${k}</th>`).join("")}</tr>
+    ${cw.map(w => { const us = cohorts.get(w); return `<tr><td>${iso(DATA_MIN + w * 7)}</td><td class="n">${us.length}</td>${Array.from({length: maxOff + 1}, (_, k) => {
+      if (w + k > lastW) return `<td></td>`; const n = us.filter(u => act.get(u).has(w + k)).length, p = pct(n, us.length);
+      return `<td class="n" data-tip="${n} of ${us.length}" style="background:color-mix(in srgb, var(--s1) ${(p * 0.55).toFixed(0)}%, transparent)">${p.toFixed(0)}%</td>`; }).join("")}</tr>`; }).join("") || `<tr><td class="empty">No data</td></tr>`}
+    </table></div><p class="note">Week 0 is always 100%. Early cohorts include people who were already using Gemini before the data starts.</p></div>
+  <div class="grid">
+    <div class="card"><h2>Lapsed users</h2><p class="sub">Active earlier in the period, silent for the last 7+ days · click for profile</p><div class="scroll"><table>
+      <tr><th>User</th><th>OU</th><th class="n">Actions</th><th>Last used</th></tr>
+      ${lapsed.slice(0, 30).map(l => `<tr class="click" data-u="${l.u}"><td>${esc(U.e[l.u])}</td><td class="dim">${esc(DI.ou[U.ou[l.u]])}</td><td class="n">${fmt(l.n)}</td><td>${iso(l.last)}</td></tr>`).join("") || `<tr><td class="empty" colspan="4">None</td></tr>`}
+    </table></div></div>
+    <div class="card"><h2>Never used, by OU</h2><p class="sub">Targets for enablement</p>
+      ${[...zeroByOu.entries()].sort((x, y) => y[1].length - x[1].length).map(([k, us]) => `<p><b>${esc(k)}</b> <span class="dim">· ${us.length}</span><br><span class="dim">${us.slice(0, 40).map(u => esc(U.e[u])).join(", ")}${us.length > 40 ? " …" : ""}</span></p>`).join("") || `<p class="empty">Everyone in scope used Gemini.</p>`}
+    </div>
+  </div>`;
+  hbars($("#e1"), freq, {});
+  bindTips(v);
+  v.querySelectorAll("tr[data-u]").forEach(tr => tr.onclick = () => openUser(+tr.dataset.u));
+}
+
+// ------------------------------------------------------------------ user drawer
+function openUser(u) { S.user = u; save(); drawUser(); }
+function drawUser() {
+  const dr = $("#drawer"), u = S.user;
+  if (u == null || u >= NU) { dr.classList.remove("open"); return; }
+  const idx = []; for (let i = 0; i < NE; i++) if (E.u[i] === u) idx.push(i);
+  idx.sort((x, y) => E.d[y] - E.d[x] || E.h[y] - E.h[x]);
+  const inP = idx.filter(i => E.d[i] >= S.from && E.d[i] <= S.to);
+  const byDay = new Map(); idx.forEach(i => byDay.set(E.d[i], (byDay.get(E.d[i]) || 0) + 1));
+  const cnt = (arr, key, dict) => { const m = new Map(); arr.forEach(i => m.set(E[key][i], (m.get(E[key][i]) || 0) + 1));
+    return [...m.entries()].sort((x, y) => y[1] - x[1]).map(([k, v]) => ({label: dict[k], v})); };
+  const hours = new Array(24).fill(0); inP.forEach(i => hours[E.h[i]]++);
+  const days = [...new Set(inP.map(i => E.d[i]))].sort((x, y) => x - y);
+  let streak = 0, cur = 0; days.forEach((d, k) => { cur = k && d === days[k - 1] + 1 ? cur + 1 : 1; streak = Math.max(streak, cur); });
+  const first = idx.length ? E.d[idx[idx.length - 1]] : null, last = idx.length ? E.d[idx[0]] : null;
+  const tier = tierOf(inP.length, S.to - S.from + 1);
+  const peak = Math.max(1, ...byDay.values());
+  const start = DATA_MIN - wday(DATA_MIN);
+  let cal = ""; for (let d = start; d <= DATA_MAX; d++) { const n = byDay.get(d) || 0;
+    cal += d < DATA_MIN ? `<i class="out"></i>` : `<i data-tip="${iso(d)}: ${n} actions">${n ? `<span style="opacity:${(0.2 + 0.8 * n / peak).toFixed(2)}"></span>` : ""}</i>`; }
+  dr.innerHTML = `<div class="top"><div><h2>${esc(U.e[u])}</h2><div class="dim">${esc(U.n[u] || "")} · ${esc(DI.ou[U.ou[u]])} ${U.s[u] ? "· suspended" : ""}</div></div>
+    <button type="button" id="close">Close ✕</button></div>
+    <div class="tiles">${tile("Actions (period)", fmt(inP.length), `<span class="pill ${tier}">${tier}</span>`)}${tile("Active days", days.length, `longest streak ${streak} days`)}
+      ${tile("Use cases", new Set(inP.map(i => E.c[i])).size, `${new Set(inP.map(i => E.a[i])).size} apps`)}
+      ${tile("Last used", last != null ? iso(last) : "never", last != null ? `${DATA_MAX - last} days ago · first ${iso(first)}` : "")}</div>
+    <div class="card"><h2>Daily activity</h2><p class="sub">Every day in the data · darker = more actions</p><div class="cal">${cal}</div></div>
+    <div class="grid"><div class="card"><h2>Apps</h2><div id="ua"></div></div><div class="card"><h2>Use cases</h2><div id="uc"></div></div></div>
+    <div class="card"><h2>Time of day</h2><p class="sub">Actions by hour (${esc(M.tz)}), selected period</p><div id="uh"></div></div>
+    <div class="card"><div class="row"><h2 class="grow">Recent actions</h2><button type="button" id="dlu">Download CSV</button></div><div class="scroll"><table>
+      <tr><th>Date</th><th class="n">Hour</th><th>App</th><th>Use case</th><th>Feature</th><th>Action</th></tr>
+      ${idx.slice(0, 40).map(i => `<tr><td>${iso(E.d[i])}</td><td class="n">${E.h[i]}:00</td><td>${esc(DI.apps[E.a[i]])}</td><td class="dim">${esc(DI.uc[E.c[i]])}</td><td>${esc(DI.feat[E.f[i]])}</td><td>${esc(DI.act[E.x[i]])}</td></tr>`).join("") || `<tr><td colspan="6" class="empty">No Gemini actions recorded.</td></tr>`}
+    </table></div><p class="note">Latest 40 of ${idx.length} actions across all data. No prompt or response content exists in Google's logs.</p></div>`;
+  dr.classList.add("open");
+  hbars($("#ua"), cnt(inP, "a", DI.apps)); hbars($("#uc"), cnt(inP, "c", DI.uc));
+  hbars($("#uh"), hours.map((v, h) => ({label: `${h}:00`, v})).filter(x => x.v));
+  bindTips(dr);
+  $("#close").onclick = () => { S.user = null; save(); dr.classList.remove("open"); };
+  $("#dlu").onclick = () => download(`gemini_${U.e[u].replace(/[^a-z0-9]+/gi, "_")}.csv`, [["date", "hour", "app", "use_case", "feature", "action"],
+    ...idx.map(i => [iso(E.d[i]), E.h[i], DI.apps[E.a[i]], DI.uc[E.c[i]], DI.feat[E.f[i]], DI.act[E.x[i]]])]);
+}
+
+// ------------------------------------------------------------------ controls
+function buildMenus() {
+  document.querySelectorAll(".dd").forEach(dd => {
+    const key = dd.dataset.key, items = FILTERS[key], menu = dd.querySelector(".menu");
+    menu.innerHTML = `<div class="acts"><button type="button" data-a="all">All</button><button type="button" data-a="none">Clear</button></div>` +
+      items.map((name, i) => `<label><input type="checkbox" value="${i}"> ${esc(name)}</label>`).join("");
+    dd.querySelector("button").onclick = e => { e.stopPropagation(); document.querySelectorAll(".dd.open").forEach(o => o !== dd && o.classList.remove("open")); dd.classList.toggle("open"); };
+    menu.onclick = e => e.stopPropagation();
+    menu.querySelectorAll("input").forEach(cb => cb.onchange = () => { S[key] = [...menu.querySelectorAll("input:checked")].map(x => +x.value); S.page = 0; render(); });
+    menu.querySelectorAll(".acts button").forEach(b => b.onclick = () => { S[key] = []; S.page = 0; render(); });
+  });
+  document.addEventListener("click", () => document.querySelectorAll(".dd.open").forEach(o => o.classList.remove("open")));
+  $("#preset").onchange = e => { S.preset = e.target.value; applyPreset(); render(); };
+  $("#from").onchange = e => { S.from = Math.max(DATA_MIN, fromIso(e.target.value)); S.preset = "custom"; if (S.from > S.to) S.to = S.from; render(); };
+  $("#to").onchange = e => { S.to = Math.min(DATA_MAX, fromIso(e.target.value)); S.preset = "custom"; if (S.to < S.from) S.from = S.to; render(); };
+  $("#roll").onchange = e => { S.roll = +e.target.value; render(); };
+  $("#cmp").onchange = e => { S.cmp = e.target.checked; render(); };
+  $("#reset").onclick = () => { S = defaults(); render(); };
+  $("#tabs").querySelectorAll("button").forEach(b => b.onclick = () => { S.tab = b.dataset.tab; render(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && S.user != null) { S.user = null; save(); $("#drawer").classList.remove("open"); } });
+  let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(render, 150); });
+}
+function applyPreset() {
+  if (S.preset === "custom") return;
+  S.to = DATA_MAX; S.from = S.preset === "all" ? DATA_MIN : Math.max(DATA_MIN, DATA_MAX - (+S.preset) + 1);
+}
+function syncControls() {
+  $("#preset").value = S.preset; $("#roll").value = String(S.roll); $("#cmp").checked = S.cmp;
+  for (const id of ["from", "to"]) { const el = $("#" + id); el.min = iso(DATA_MIN); el.max = iso(DATA_MAX); el.value = iso(S[id]); }
+  document.querySelectorAll(".dd").forEach(dd => { const key = dd.dataset.key, set = new Set(S[key]);
+    dd.querySelectorAll(".menu input").forEach(cb => cb.checked = set.has(+cb.value));
+    const b = dd.querySelector("button"); b.textContent = { ou: "Org unit", app: "App", uc: "Use case", fam: "Type" }[key] + (set.size ? ` (${set.size})` : ""); });
+  $("#tabs").querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.tab === S.tab));
+  const chips = [];
+  for (const key of ["ou", "app", "uc", "fam"]) S[key].forEach(i => chips.push(`<span class="chip">${{ou: "OU", app: "App", uc: "Use case", fam: "Type"}[key]}: <b>${esc(FILTERS[key][i])}</b><button type="button" data-k="${key}" data-i="${i}" aria-label="Remove">✕</button></span>`));
+  if (S.tier && S.tab === "people") chips.push(`<span class="chip">Tier: <b>${S.tier}</b><button type="button" data-k="tier" aria-label="Remove">✕</button></span>`);
+  $("#chips").innerHTML = chips.join("");
+  $("#chips").querySelectorAll("button").forEach(b => b.onclick = () => { const k = b.dataset.k; if (k === "tier") S.tier = ""; else S[k] = S[k].filter(x => x !== +b.dataset.i); render(); });
+}
+function render() {
+  if (S.preset !== "custom") applyPreset();
+  S.from = Math.max(DATA_MIN, Math.min(S.from, DATA_MAX)); S.to = Math.max(S.from, Math.min(S.to, DATA_MAX));
+  syncControls(); save(); hideTip();
+  const c = ctx();
+  $("#meta").textContent = `${iso(S.from)} → ${iso(S.to)} · ${S.to - S.from + 1} days · data ${iso(DATA_MIN)} → ${iso(DATA_MAX)}`;
+  ({overview, usecases, teams, people, engagement}[S.tab] || overview)(c);
+  if (S.user != null) drawUser();
+}
+$("#foot").innerHTML = `Source: Google Workspace Gemini audit log (Admin SDK Reports API), ${esc(M.tz)} · generated ${esc(M.generated)}${M.pseudonymised ? " · <b>pseudonymised</b>" : ""}.
+  All processing happens in this page; nothing is sent anywhere. Contains per-person usage data — share only where authorised.
+  Google's logs contain no prompt or response content.`;
+buildMenus(); render();
+})();
+{% endraw %}
+</script>
+</body>
+</html>

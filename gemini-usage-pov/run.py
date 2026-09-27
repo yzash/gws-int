@@ -19,7 +19,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src import fetch, pipeline, report, transform
+from src import cio, fetch, pipeline, report, transform
 from src.common import Pseudonymiser
 from src.config import MAX_RECOMMENDED_WINDOW_DAYS, ConfigError, load_config
 
@@ -167,6 +167,8 @@ def main(argv=None) -> int:
     ctx = report.dashboard_context(summary, scoped, org, comparison, sections=sections,
                                    pseudo=pseudo, run_date=run_date)
     dash = report.render_dashboard(out_dir, run_date, ctx)
+    cio_dash = cio.render(out_dir, run_date,
+                          cio.build_payload(summary, scoped, {**cfg, "_start": start, "_end": end}, pseudo is not None))
 
     m = dict(zip(org["metric"], org["value"]))
     print(f"\nUsers in scope: {m['total_users']}  Active: {m['active_users']}  "
@@ -175,10 +177,11 @@ def main(argv=None) -> int:
     print("\nWhat this tenant's data can show:")
     for label, n in cov["status"].value_counts().items():
         print(f"  {label}: {n} metrics")
-    for p in list(paths.values()) + [details, dash]:
+    for p in list(paths.values()) + [details, dash, cio_dash]:
         print(f"  wrote {p}")
     if not args.no_browser:
         webbrowser.open(dash.resolve().as_uri())
+        webbrowser.open(cio_dash.resolve().as_uri())
     return 0
 
 

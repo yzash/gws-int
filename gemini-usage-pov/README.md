@@ -127,6 +127,33 @@ python run.py --pseudonymise            # replace emails, names, titles and IPs 
 python setup.py --modules               # change which optional data sources are collected
 ```
 
+## CIO dashboard (`output/cio_dashboard.html`)
+
+An interactive, Gemini-only dashboard written on every run next to the standard report. It is one
+self-contained file: your data is embedded in it and all filtering happens in the browser, so it works
+offline and sends nothing anywhere. Keep it as private as the CSVs, or build it with `--pseudonymise`.
+
+- **Filters that apply everywhere:** period (last 7 / 14 / 28 / 90 days, all data, or custom dates),
+  rolling window (1 / 7 / 14 / 28 days), org unit, app, use case and use-case type. Clicking a bar or a
+  team row filters to it. The current view is kept in the page address, so a bookmark reopens it.
+- **Compare to previous period:** every headline number shows its change against the period of equal
+  length before it (when that period is fully inside the data).
+- **Overview:** active users, adoption %, actions, actions per active user, median active days,
+  stickiness (average daily actives ÷ 28-day actives), new users, use cases per user; daily vs rolling
+  active users; actions with a rolling average; tiers; apps; top use cases.
+- **Use cases:** reach of each of the 13 use cases, share of actions by type, use case × app matrix,
+  weekly trend per use case, every app / feature / action combination.
+- **Teams:** adoption by OU or OU level with actions per user, median days, tiers, top use case, weekly
+  trend and target flags; groups smaller than `min_group_size` are hidden.
+- **People:** everyone in scope, searchable and sortable by actions, active days, use cases, apps, last
+  used and tier, with a weekly trend. Click anyone for their profile: daily activity calendar, apps, use
+  cases, time of day, longest streak and their latest actions.
+- **Engagement:** weekday × hour heatmap, after-hours share, how many days people use Gemini, weekly
+  cohort retention, lapsed users and never-used users by OU.
+- **CSV download** on the features, teams, people and per-person views, respecting the current filters.
+
+Tiers use the Admin console thresholds per 28 days, scaled to the selected period length.
+
 ## Data sources
 
 Change these with `python setup.py --modules` (it tells you which APIs to enable). If the
@@ -249,7 +276,8 @@ src/sections_*.py   Gemini deep-dive, Workspace audit-log sections, usage/licenc
 src/coverage.py     the catalog of metrics and the coverage map
 src/common.py       shared helpers, pseudonymiser
 src/report.py       CSV writers, dashboard rendering
-templates/          dashboard.html.j2, section.html.j2
+src/cio.py          interactive CIO dashboard payload (compact columnar data) and rendering
+templates/          dashboard.html.j2, section.html.j2, cio.html.j2 (vanilla JS, no external libraries)
 tests/              pytest suite; runs offline on tests/fixtures/sample_cache.json and
                     tests/synthetic_extra.py (synthetic API-shaped records, used only by tests)
 tools/              make_sample_fixture.py, anonymise_cache.py
